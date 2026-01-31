@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Get all .tsx files in components/ui (excluding subdirectories like ai/ and logos/)
-const uiPath = path.join(__dirname, "../components/ui");
+const uiPath = path.join(__dirname, "../src/components/ui");
 const allFiles = fs.readdirSync(uiPath);
 
 // Filter to only .tsx files and extract component names (without extension)
