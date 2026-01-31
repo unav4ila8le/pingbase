@@ -1,15 +1,15 @@
-import { LoginForm } from "@/components/login-form";
 import { createFileRoute } from "@tanstack/react-router";
+import { ForgotPasswordForm } from "@/components/forgot-password-form";
 
-export const Route = createFileRoute("/login")({
-  component: Login,
+export const Route = createFileRoute("/forgot-password")({
+  component: ForgotPassword,
 });
 
-function Login() {
+function ForgotPassword() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <LoginForm />
+        <ForgotPasswordForm />
       </div>
     </div>
   );
