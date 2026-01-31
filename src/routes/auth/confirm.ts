@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
-import { type EmailOtpType } from "@supabase/supabase-js";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { getWebRequest } from "@tanstack/react-start/server";
+import { getRequest } from "@tanstack/react-start/server";
+import type { EmailOtpType } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 
 const confirmFn = createServerFn({ method: "GET" })
   .validator((searchParams: unknown) => {
@@ -18,7 +18,7 @@ const confirmFn = createServerFn({ method: "GET" })
     throw new Error("Invalid search params");
   })
   .handler(async (ctx) => {
-    const request = getWebRequest();
+    const request = getRequest();
 
     if (!request) {
       throw redirect({ to: `/auth/error`, search: { error: "No request" } });
