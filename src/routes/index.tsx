@@ -1,8 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ComponentExample } from '@/components/component-example'
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
-  return <ComponentExample />
+  return (
+    <div>
+      <h1>Pingbase</h1>
+    </div>
+  )
 }
