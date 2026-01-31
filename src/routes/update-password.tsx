@@ -8,7 +8,7 @@ export const Route = createFileRoute("/update-password")({
 
 function UpdatePassword() {
   return (
-    <div className="flex flex-col gap-4 min-h-svh w-full items-center justify-center p-6 md:p-10 bg-muted">
+    <div className="bg-muted flex min-h-svh w-full flex-col items-center justify-center gap-4 p-6 md:p-10">
       <Logo />
       <div className="w-full max-w-sm">
         <UpdatePasswordForm />

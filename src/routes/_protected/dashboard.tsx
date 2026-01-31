@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_protected/protected")({
-  component: Info,
+export const Route = createFileRoute("/_protected/dashboard")({
+  component: Dashboard,
   loader: ({ context }) => {
     return {
       user: context.user,
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_protected/protected")({
   },
 });
 
-function Info() {
+function Dashboard() {
   const data = Route.useLoaderData();
 
   return <p>Hello {data.user.email}</p>;

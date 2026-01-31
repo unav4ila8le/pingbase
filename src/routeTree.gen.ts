@@ -18,7 +18,7 @@ import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthErrorRouteImport } from './routes/auth/error'
 import { Route as AuthConfirmRouteImport } from './routes/auth/confirm'
-import { Route as ProtectedProtectedRouteImport } from './routes/_protected/protected'
+import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
 
 const UpdatePasswordRoute = UpdatePasswordRouteImport.update({
   id: '/update-password',
@@ -64,9 +64,9 @@ const AuthConfirmRoute = AuthConfirmRouteImport.update({
   path: '/auth/confirm',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedProtectedRoute = ProtectedProtectedRouteImport.update({
-  id: '/protected',
-  path: '/protected',
+const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => ProtectedRoute,
 } as any)
 
@@ -77,7 +77,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/signup-success': typeof SignupSuccessRoute
   '/update-password': typeof UpdatePasswordRoute
-  '/protected': typeof ProtectedProtectedRoute
+  '/dashboard': typeof ProtectedDashboardRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/error': typeof AuthErrorRoute
 }
@@ -88,7 +88,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/signup-success': typeof SignupSuccessRoute
   '/update-password': typeof UpdatePasswordRoute
-  '/protected': typeof ProtectedProtectedRoute
+  '/dashboard': typeof ProtectedDashboardRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/error': typeof AuthErrorRoute
 }
@@ -101,7 +101,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/signup-success': typeof SignupSuccessRoute
   '/update-password': typeof UpdatePasswordRoute
-  '/_protected/protected': typeof ProtectedProtectedRoute
+  '/_protected/dashboard': typeof ProtectedDashboardRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/error': typeof AuthErrorRoute
 }
@@ -114,7 +114,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/signup-success'
     | '/update-password'
-    | '/protected'
+    | '/dashboard'
     | '/auth/confirm'
     | '/auth/error'
   fileRoutesByTo: FileRoutesByTo
@@ -125,7 +125,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/signup-success'
     | '/update-password'
-    | '/protected'
+    | '/dashboard'
     | '/auth/confirm'
     | '/auth/error'
   id:
@@ -137,7 +137,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/signup-success'
     | '/update-password'
-    | '/_protected/protected'
+    | '/_protected/dashboard'
     | '/auth/confirm'
     | '/auth/error'
   fileRoutesById: FileRoutesById
@@ -219,22 +219,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthConfirmRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/protected': {
-      id: '/_protected/protected'
-      path: '/protected'
-      fullPath: '/protected'
-      preLoaderRoute: typeof ProtectedProtectedRouteImport
+    '/_protected/dashboard': {
+      id: '/_protected/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof ProtectedDashboardRouteImport
       parentRoute: typeof ProtectedRoute
     }
   }
 }
 
 interface ProtectedRouteChildren {
-  ProtectedProtectedRoute: typeof ProtectedProtectedRoute
+  ProtectedDashboardRoute: typeof ProtectedDashboardRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
-  ProtectedProtectedRoute: ProtectedProtectedRoute,
+  ProtectedDashboardRoute: ProtectedDashboardRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(

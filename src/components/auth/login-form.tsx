@@ -49,9 +49,7 @@ export function LoginForm({
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">Login</CardTitle>
-          <CardDescription>
-            Enter your credentials below
-          </CardDescription>
+          <CardDescription>Enter your credentials below</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin}>

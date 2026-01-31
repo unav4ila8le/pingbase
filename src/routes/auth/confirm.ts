@@ -19,7 +19,10 @@ const confirmFn = createServerFn({ method: "GET" })
     return {
       token_hash:
         typeof params.token_hash === "string" ? params.token_hash : undefined,
-      type: typeof params.type === "string" ? (params.type as EmailOtpType) : undefined,
+      type:
+        typeof params.type === "string"
+          ? (params.type as EmailOtpType)
+          : undefined,
       next: typeof params.next === "string" ? params.next : undefined,
     };
   })
