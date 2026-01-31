@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 
 export function LoginForm({
   className,
@@ -84,8 +85,12 @@ export function LoginForm({
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
+              <Button
+                type="submit"
+                className="w-full hover:bg-primary/80"
+                disabled={isLoading}
+              >
+                {isLoading ? <><Spinner /> Logging in...</> : "Login"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">

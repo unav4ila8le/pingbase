@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 
 export function SignUpForm({
   className,
@@ -98,8 +99,12 @@ export function SignUpForm({
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating an account..." : "Sign up"}
+              <Button
+                type="submit"
+                className="w-full hover:bg-primary/80"
+                disabled={isLoading}
+              >
+                {isLoading ? <><Spinner /> Creating your account...</> : "Sign up"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
