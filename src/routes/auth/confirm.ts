@@ -1,34 +1,36 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
+type ConfirmSearch = {
+  token_hash?: string;
+  type?: EmailOtpType;
+  next?: string;
+};
+
 const confirmFn = createServerFn({ method: "GET" })
-  .validator((searchParams: unknown) => {
-    if (
-      searchParams &&
-      typeof searchParams === "object" &&
-      "token_hash" in searchParams &&
-      "type" in searchParams &&
-      "next" in searchParams
-    ) {
-      return searchParams;
+  .inputValidator((searchParams: unknown): ConfirmSearch => {
+    if (!searchParams || typeof searchParams !== "object") {
+      return {};
     }
-    throw new Error("Invalid search params");
+
+    const params = searchParams as Record<string, unknown>;
+    return {
+      token_hash:
+        typeof params.token_hash === "string" ? params.token_hash : undefined,
+      type: typeof params.type === "string" ? (params.type as EmailOtpType) : undefined,
+      next: typeof params.next === "string" ? params.next : undefined,
+    };
   })
   .handler(async (ctx) => {
-    const request = getRequest();
-
-    if (!request) {
-      throw redirect({ to: `/auth/error`, search: { error: "No request" } });
-    }
-
     const searchParams = ctx.data;
-    const token_hash = searchParams["token_hash"] as string;
-    const type = searchParams["type"] as EmailOtpType | null;
-    const _next = searchParams["next"] as string;
-    const next = _next?.startsWith("/") ? _next : "/";
+    const token_hash = searchParams.token_hash;
+    const type = searchParams.type ?? null;
+    const next =
+      typeof searchParams.next === "string" && searchParams.next.startsWith("/")
+        ? searchParams.next
+        : "/";
 
     if (token_hash && type) {
       const supabase = createClient();
@@ -37,7 +39,6 @@ const confirmFn = createServerFn({ method: "GET" })
         type,
         token_hash,
       });
-      console.log(error?.message);
       if (!error) {
         // redirect user to specified redirect URL or root of app
         throw redirect({ href: next });
@@ -45,7 +46,7 @@ const confirmFn = createServerFn({ method: "GET" })
         // redirect the user to an error page with some instructions
         throw redirect({
           to: `/auth/error`,
-          search: { error: error?.message },
+          search: { error: error.message },
         });
       }
     }

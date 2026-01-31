@@ -30,13 +30,16 @@ export function ForgotPasswordForm({
 
     try {
       // The url which will be included in the email. This URL needs to be configured in your redirect URLs in the Supabase dashboard at https://supabase.com/dashboard/project/_/auth/url-configuration
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "http://localhost:3000/update-password",
-      });
-      if (error) throw error;
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo: "http://localhost:3000/update-password",
+        },
+      );
+      if (resetError) throw resetError;
       setSuccess(true);
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +50,7 @@ export function ForgotPasswordForm({
       {success ? (
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
+            <CardTitle className="text-xl">Check Your Email</CardTitle>
             <CardDescription>Password reset instructions sent</CardDescription>
           </CardHeader>
           <CardContent>
@@ -60,7 +63,7 @@ export function ForgotPasswordForm({
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Reset Your Password</CardTitle>
+            <CardTitle className="text-xl">Reset Your Password</CardTitle>
             <CardDescription>
               Type in your email and we&apos;ll send you a link to reset your
               password
@@ -74,7 +77,7 @@ export function ForgotPasswordForm({
                   <Input
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="mail@example.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

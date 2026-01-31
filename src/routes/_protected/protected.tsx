@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_protected/protected")({
   component: Info,
-  loader: async ({ context }) => {
+  loader: ({ context }) => {
     return {
-      user: context.user!,
+      user: context.user,
     };
   },
 });

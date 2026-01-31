@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-"use client";
-
 import { useMemo } from "react";
 import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";

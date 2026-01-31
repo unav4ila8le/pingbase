@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
+import { SignUpForm } from "@/components/auth/signup-form";
 import { Logo } from "@/components/logo/logo";
 
-export const Route = createFileRoute("/forgot-password")({
-  component: ForgotPassword,
+export const Route = createFileRoute("/signup")({
+  component: SignUp,
 });
 
-function ForgotPassword() {
+function SignUp() {
   return (
     <div className="flex flex-col gap-4 min-h-svh w-full items-center justify-center p-6 md:p-10 bg-muted">
       <Logo />
       <div className="w-full max-w-sm">
-        <ForgotPasswordForm />
+        <SignUpForm />
       </div>
     </div>
   );

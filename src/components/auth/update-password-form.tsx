@@ -29,12 +29,14 @@ export function UpdatePasswordForm({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) throw error;
+      const { error: updateError } = await supabase.auth.updateUser({
+        password,
+      });
+      if (updateError) throw updateError;
       // Update this route to redirect to an authenticated route. The user already has an active session.
       await navigate({ to: "/protected" });
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -44,7 +46,7 @@ export function UpdatePasswordForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Reset Your Password</CardTitle>
+          <CardTitle className="text-xl">Reset Your Password</CardTitle>
           <CardDescription>
             Please enter your new password below.
           </CardDescription>

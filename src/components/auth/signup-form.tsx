@@ -36,17 +36,17 @@ export function SignUpForm({
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/protected`,
         },
       });
-      if (error) throw error;
-      await navigate({ to: "/sign-up-success" });
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      if (signUpError) throw signUpError;
+      await navigate({ to: "/signup-success" });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +56,7 @@ export function SignUpForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Sign up</CardTitle>
+          <CardTitle className="text-xl">Sign up</CardTitle>
           <CardDescription>Create a new account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -67,7 +67,7 @@ export function SignUpForm({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="mail@example.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
