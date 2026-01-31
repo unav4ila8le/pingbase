@@ -36,7 +36,7 @@ export function LoginForm({
       });
       if (signInError) throw signInError;
       // Update this route to redirect to an authenticated route. The user already has an active session.
-      await navigate({ to: "/protected" });
+      await navigate({ to: "/dashboard" });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
