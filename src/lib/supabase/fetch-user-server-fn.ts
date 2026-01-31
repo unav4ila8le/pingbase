@@ -1,8 +1,9 @@
-import { createClient } from "@/lib/supabase/server";
-import type { Factor, User } from "@supabase/supabase-js";
 import { createServerFn } from "@tanstack/react-start";
+import type { Factor, User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
+
 type SSRSafeUser = User & {
-  factors: (Factor & { factor_type: "phone" | "totp" })[];
+  factors: Array<Factor & { factor_type: "phone" | "totp" }>;
 };
 
 export const fetchUser: () => Promise<SSRSafeUser | null> = createServerFn({
