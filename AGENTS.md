@@ -3,7 +3,7 @@
 ## Project Context
 
 - Pingbase is a TanStack Start app for monitoring online conversations (MVP: Reddit).
-- Stack: React 19, TypeScript, TanStack Start/Router, Supabase, shadcn/ui, Tailwind CSS.
+- Stack: React 19, TypeScript, TanStack Start/Router, Supabase, shadcn/ui with Base UI, Tailwind CSS.
 - Deployment: host-agnostic (Netlify/Cloudflare/Railway/Vercel compatible).
 - Canonical data model: `targets` and `signals` (signals duplicate per target).
 - MVP retention: 30 days for signals and raw payloads.

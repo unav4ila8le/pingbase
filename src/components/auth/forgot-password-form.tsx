@@ -87,10 +87,16 @@ export function ForgotPasswordForm({
                 {error && <p className="text-sm text-red-500">{error}</p>}
                 <Button
                   type="submit"
-                  className="w-full hover:bg-primary/80"
+                  className="hover:bg-primary/80 w-full"
                   disabled={isLoading}
                 >
-                  {isLoading ? <><Spinner /> Sending...</> : "Send reset email"}
+                  {isLoading ? (
+                    <>
+                      <Spinner /> Sending...
+                    </>
+                  ) : (
+                    "Send reset email"
+                  )}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">

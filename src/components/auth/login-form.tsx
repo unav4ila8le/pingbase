@@ -87,10 +87,16 @@ export function LoginForm({
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button
                 type="submit"
-                className="w-full hover:bg-primary/80"
+                className="hover:bg-primary/80 w-full"
                 disabled={isLoading}
               >
-                {isLoading ? <><Spinner /> Logging in...</> : "Login"}
+                {isLoading ? (
+                  <>
+                    <Spinner /> Logging in...
+                  </>
+                ) : (
+                  "Login"
+                )}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">

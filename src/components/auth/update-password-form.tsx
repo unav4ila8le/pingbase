@@ -69,10 +69,16 @@ export function UpdatePasswordForm({
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button
                 type="submit"
-                className="w-full hover:bg-primary/80"
+                className="hover:bg-primary/80 w-full"
                 disabled={isLoading}
               >
-                {isLoading ? <><Spinner /> Saving...</> : "Save new password"}
+                {isLoading ? (
+                  <>
+                    <Spinner /> Saving...
+                  </>
+                ) : (
+                  "Save new password"
+                )}
               </Button>
             </div>
           </form>
