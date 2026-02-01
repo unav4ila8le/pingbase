@@ -1,5 +1,7 @@
 import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 
+import { signalColumns } from "@/components/dashboard/signals/table/signal-columns";
+import { DataTable } from "@/components/ui/custom/data-table";
 import { Button } from "@/components/ui/button";
 import { fetchTarget } from "@/server/targets/fetch-target";
 import { fetchTargetSignals } from "@/server/signals/fetch-target-signals";
@@ -38,58 +40,9 @@ function TargetDetail() {
         </div>
       </div>
 
-      <div className="rounded-xl border">
-        <div className="border-b px-4 py-3 text-sm font-medium">Signals</div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="text-muted-foreground text-left text-xs uppercase">
-              <tr className="border-b">
-                <th className="px-4 py-2">Platform</th>
-                <th className="px-4 py-2">Community</th>
-                <th className="px-4 py-2">Title / Excerpt</th>
-                <th className="px-4 py-2">Score</th>
-                <th className="px-4 py-2">Reason</th>
-                <th className="px-4 py-2">Status</th>
-                <th className="px-4 py-2">Link</th>
-              </tr>
-            </thead>
-            <tbody>
-              {signals.length === 0 ? (
-                <tr>
-                  <td
-                    className="text-muted-foreground px-4 py-6 text-center text-sm"
-                    colSpan={7}
-                  >
-                    No signals yet.
-                  </td>
-                </tr>
-              ) : (
-                signals.map((signal) => (
-                  <tr key={signal.id} className="border-b last:border-0">
-                    <td className="px-4 py-2 capitalize">{signal.platform}</td>
-                    <td className="px-4 py-2">{signal.community}</td>
-                    <td className="px-4 py-2">
-                      {signal.title ?? signal.content_excerpt}
-                    </td>
-                    <td className="px-4 py-2">{signal.score}</td>
-                    <td className="px-4 py-2">{signal.reason}</td>
-                    <td className="px-4 py-2 capitalize">{signal.status}</td>
-                    <td className="px-4 py-2">
-                      <a
-                        className="text-primary underline underline-offset-4"
-                        href={signal.url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Open
-                      </a>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      <div className="space-y-2">
+        <div className="text-sm font-medium">Signals</div>
+        <DataTable columns={signalColumns} data={signals} />
       </div>
     </div>
   );
