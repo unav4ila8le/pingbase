@@ -178,7 +178,7 @@ UI rule: show scores **>= 70**; scores **40–69** are hidden but retained.
 - Use the official Reddit API.
 - The initial scope should be **as open as possible** while remaining practical.
 - Discovery can be based on:
-  - broad subreddit coverage
+  - r/all new feed (light scan)
   - keyword/search queries derived from the Target definition
 
 The system should be designed so that additional sources can be added later.
@@ -189,11 +189,12 @@ The system should be designed so that additional sources can be added later.
 
 1. Periodic scan (~every 15 minutes)
 2. Fetch new posts/comments from Reddit
-3. Deduplicate using platform + external_id + target_id
-4. Evaluate relevance using an LLM
-5. Assign score and reason
-6. Store accepted signals
-7. Display in the dashboard
+3. Filter out items older than `targets.created_at` (no backfill by default)
+4. Deduplicate using platform + external_id + target_id
+5. Evaluate relevance using an LLM
+6. Assign score and reason
+7. Store accepted signals
+8. Display in the dashboard
 
 ---
 
@@ -217,6 +218,7 @@ The system should be designed so that additional sources can be added later.
 
 ## LLM Requirements
 
+- Use AI SDK 6 (provider-agnostic) with OpenAI as the initial provider.
 - Structured output (JSON) for `score` + `reason` at minimum.
 - Use Target name, description, keywords, and exclusions in the prompt.
 
