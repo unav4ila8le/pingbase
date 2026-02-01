@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { UpdatePasswordForm } from "@/components/auth/update-password-form";
 import { Logo } from "@/components/logo/logo";
 
-export const Route = createFileRoute("/update-password")({
+export const Route = createFileRoute("/auth/update-password")({
   component: UpdatePassword,
 });
 

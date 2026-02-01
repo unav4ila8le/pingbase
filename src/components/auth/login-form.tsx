@@ -117,7 +117,7 @@ export function LoginForm({
                         <div className="flex items-center">
                           <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                           <Link
-                            to="/forgot-password"
+                            to="/auth/forgot-password"
                             className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                           >
                             Forgot your password?
@@ -166,7 +166,7 @@ export function LoginForm({
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link to="/signup" className="underline underline-offset-4">
+              <Link to="/auth/signup" className="underline underline-offset-4">
                 Sign up
               </Link>
             </div>

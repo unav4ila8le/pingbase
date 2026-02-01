@@ -36,11 +36,11 @@ function App() {
               <Button
                 variant="outline"
                 nativeButton={false}
-                render={<Link to="/login">Log in</Link>}
+                render={<Link to="/auth/login">Log in</Link>}
               />
               <Button
                 nativeButton={false}
-                render={<Link to="/signup">Sign up</Link>}
+                render={<Link to="/auth/signup">Sign up</Link>}
               />
             </>
           )}

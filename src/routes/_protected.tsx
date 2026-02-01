@@ -7,13 +7,13 @@ export const Route = createFileRoute("/_protected")({
     const claims = await getClaims();
 
     if (!claims) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/auth/login" });
     }
 
     const user = await fetchUser();
 
     if (!user) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/auth/login" });
     }
 
     return {

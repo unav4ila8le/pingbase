@@ -62,7 +62,7 @@ export function SignUpForm({
           },
         });
         if (signUpError) throw signUpError;
-        await navigate({ to: "/signup-success" });
+        await navigate({ to: "/auth/signup-success" });
       } catch (err: unknown) {
         setSubmitError(
           err instanceof Error ? err.message : "An error occurred",
@@ -198,7 +198,7 @@ export function SignUpForm({
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link to="/login" className="underline underline-offset-4">
+              <Link to="/auth/login" className="underline underline-offset-4">
                 Login
               </Link>
             </div>

@@ -3,7 +3,7 @@ import { SignUpForm } from "@/components/auth/signup-form";
 import { Logo } from "@/components/logo/logo";
 import { getClaims } from "@/server/auth/get-claims";
 
-export const Route = createFileRoute("/signup")({
+export const Route = createFileRoute("/auth/signup")({
   beforeLoad: async () => {
     const claims = await getClaims();
     if (claims) {

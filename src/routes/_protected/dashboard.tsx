@@ -3,8 +3,8 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import type { Target } from "@/types/global.types";
-import { TargetCard } from "@/components/targets/target-card";
-import { TargetDialog } from "@/components/targets/target-dialog";
+import { TargetCard } from "@/components/dashboard/targets/target-card";
+import { TargetDialog } from "@/components/dashboard/targets/target-dialog";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
