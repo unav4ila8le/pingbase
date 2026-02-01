@@ -275,17 +275,21 @@ export function TargetDialog({
             />
           </FieldGroup>
           <DialogFooter showCloseButton>
-            <Button type="submit" disabled={form.state.isSubmitting}>
-              {form.state.isSubmitting ? (
-                <>
-                  <Spinner /> Saving...
-                </>
-              ) : mode === "create" ? (
-                "Create target"
-              ) : (
-                "Save changes"
+            <form.Subscribe selector={(state) => state.isSubmitting}>
+              {(isSubmitting) => (
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <Spinner /> Saving...
+                    </>
+                  ) : mode === "create" ? (
+                    "Create target"
+                  ) : (
+                    "Save changes"
+                  )}
+                </Button>
               )}
-            </Button>
+            </form.Subscribe>
           </DialogFooter>
         </form>
       </DialogContent>

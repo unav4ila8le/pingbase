@@ -178,19 +178,23 @@ export function SignUpForm({
               {submitError ? (
                 <p className="text-destructive text-sm">{submitError}</p>
               ) : null}
-              <Button
-                type="submit"
-                className="hover:bg-primary/80 w-full"
-                disabled={form.state.isSubmitting}
-              >
-                {form.state.isSubmitting ? (
-                  <>
-                    <Spinner /> Creating your account...
-                  </>
-                ) : (
-                  "Sign up"
+              <form.Subscribe selector={(state) => state.isSubmitting}>
+                {(isSubmitting) => (
+                  <Button
+                    type="submit"
+                    className="hover:bg-primary/80 w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner /> Creating your account...
+                      </>
+                    ) : (
+                      "Sign up"
+                    )}
+                  </Button>
                 )}
-              </Button>
+              </form.Subscribe>
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}

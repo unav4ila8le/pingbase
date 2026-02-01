@@ -111,19 +111,23 @@ export function UpdatePasswordForm({
               {submitError ? (
                 <p className="text-destructive text-sm">{submitError}</p>
               ) : null}
-              <Button
-                type="submit"
-                className="hover:bg-primary/80 w-full"
-                disabled={form.state.isSubmitting}
-              >
-                {form.state.isSubmitting ? (
-                  <>
-                    <Spinner /> Saving...
-                  </>
-                ) : (
-                  "Save new password"
+              <form.Subscribe selector={(state) => state.isSubmitting}>
+                {(isSubmitting) => (
+                  <Button
+                    type="submit"
+                    className="hover:bg-primary/80 w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner /> Saving...
+                      </>
+                    ) : (
+                      "Save new password"
+                    )}
+                  </Button>
                 )}
-              </Button>
+              </form.Subscribe>
             </div>
           </form>
         </CardContent>

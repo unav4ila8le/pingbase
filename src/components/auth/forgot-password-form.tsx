@@ -127,19 +127,23 @@ export function ForgotPasswordForm({
                 {submitError ? (
                   <p className="text-destructive text-sm">{submitError}</p>
                 ) : null}
-                <Button
-                  type="submit"
-                  className="hover:bg-primary/80 w-full"
-                  disabled={form.state.isSubmitting}
-                >
-                  {form.state.isSubmitting ? (
-                    <>
-                      <Spinner /> Sending...
-                    </>
-                  ) : (
-                    "Send reset email"
+                <form.Subscribe selector={(state) => state.isSubmitting}>
+                  {(isSubmitting) => (
+                    <Button
+                      type="submit"
+                      className="hover:bg-primary/80 w-full"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Spinner /> Sending...
+                        </>
+                      ) : (
+                        "Send reset email"
+                      )}
+                    </Button>
                   )}
-                </Button>
+                </form.Subscribe>
               </div>
               <div className="mt-4 text-center text-sm">
                 Already have an account?{" "}

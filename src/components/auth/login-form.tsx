@@ -146,19 +146,23 @@ export function LoginForm({
               {submitError ? (
                 <p className="text-destructive text-sm">{submitError}</p>
               ) : null}
-              <Button
-                type="submit"
-                className="hover:bg-primary/80 w-full"
-                disabled={form.state.isSubmitting}
-              >
-                {form.state.isSubmitting ? (
-                  <>
-                    <Spinner /> Logging in...
-                  </>
-                ) : (
-                  "Login"
+              <form.Subscribe selector={(state) => state.isSubmitting}>
+                {(isSubmitting) => (
+                  <Button
+                    type="submit"
+                    className="hover:bg-primary/80 w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner /> Logging in...
+                      </>
+                    ) : (
+                      "Login"
+                    )}
+                  </Button>
                 )}
-              </Button>
+              </form.Subscribe>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}

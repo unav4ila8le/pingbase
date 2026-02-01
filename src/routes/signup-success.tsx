@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -18,17 +19,19 @@ function SignUpSuccess() {
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl">
-                Thank you for signing up!
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <HugeiconsIcon
+                  icon={CheckmarkCircle02Icon}
+                  strokeWidth={2}
+                  className="size-6 text-green-500"
+                />
+                <span>Thank you for signing up!</span>
               </CardTitle>
-              <CardDescription>Check your email to confirm</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
+              <CardDescription>
                 You&apos;ve successfully signed up. Please check your email to
                 confirm your account before signing in.
-              </p>
-            </CardContent>
+              </CardDescription>
+            </CardHeader>
           </Card>
         </div>
       </div>
