@@ -115,9 +115,7 @@ export function LoginForm({
                     return (
                       <Field data-invalid={isInvalid}>
                         <div className="flex items-center">
-                          <FieldLabel htmlFor={field.name}>
-                            Password
-                          </FieldLabel>
+                          <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                           <Link
                             to="/forgot-password"
                             className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -146,7 +144,7 @@ export function LoginForm({
                 />
               </FieldGroup>
               {submitError ? (
-                <p className="text-sm text-destructive">{submitError}</p>
+                <p className="text-destructive text-sm">{submitError}</p>
               ) : null}
               <Button
                 type="submit"

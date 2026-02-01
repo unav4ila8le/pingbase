@@ -109,7 +109,7 @@ export function UpdatePasswordForm({
                 />
               </FieldGroup>
               {submitError ? (
-                <p className="text-sm text-destructive">{submitError}</p>
+                <p className="text-destructive text-sm">{submitError}</p>
               ) : null}
               <Button
                 type="submit"

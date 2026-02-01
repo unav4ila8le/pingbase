@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
+import { toast } from "sonner";
 
 import type { Target } from "@/types/global.types";
 import { Button } from "@/components/ui/button";
@@ -71,15 +72,12 @@ export function TargetDialog({
   onSuccess,
 }: TargetDialogProps) {
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const form = useForm({
     defaultValues: getInitialValues(target),
     validators: {
       onSubmit: targetSchema,
     },
     onSubmit: async ({ value }) => {
-      setError(null);
-
       try {
         const payload = {
           name: value.name.trim(),
@@ -96,16 +94,27 @@ export function TargetDialog({
           mode === "create"
             ? await createTarget({ data: payload })
             : await updateTarget({
-              data: {
-                id: target?.id ?? "",
-                ...payload,
-              },
-            });
+                data: {
+                  id: target?.id ?? "",
+                  ...payload,
+                },
+              });
 
         onSuccess?.(result);
+        if (mode === "create") {
+          toast.success("Target created");
+        }
         setOpen(false);
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "Something went wrong.");
+        toast.error(
+          mode === "create"
+            ? "Failed to create target"
+            : "Failed to update target",
+          {
+            description:
+              err instanceof Error ? err.message : "Something went wrong.",
+          },
+        );
       }
     },
   });
@@ -125,7 +134,6 @@ export function TargetDialog({
   useEffect(() => {
     if (open) {
       form.reset(getInitialValues(target));
-      setError(null);
     }
   }, [form, open, target]);
 
@@ -266,7 +274,6 @@ export function TargetDialog({
               }}
             />
           </FieldGroup>
-          {error ? <p className="text-sm text-destructive">{error}</p> : null}
           <DialogFooter showCloseButton>
             <Button type="submit" disabled={form.state.isSubmitting}>
               {form.state.isSubmitting ? (

@@ -45,10 +45,12 @@ export function ForgotPasswordForm({
 
       try {
         // The url which will be included in the email. This URL needs to be configured in your redirect URLs in the Supabase dashboard at https://supabase.com/dashboard/project/_/auth/url-configuration
-        const { error: resetError } =
-          await supabase.auth.resetPasswordForEmail(value.email, {
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+          value.email,
+          {
             redirectTo: "http://localhost:3000/update-password",
-          });
+          },
+        );
         if (resetError) throw resetError;
         setSuccess(true);
       } catch (err: unknown) {
@@ -96,8 +98,7 @@ export function ForgotPasswordForm({
                     name="email"
                     children={(field) => {
                       const isInvalid =
-                        field.state.meta.isTouched &&
-                        !field.state.meta.isValid;
+                        field.state.meta.isTouched && !field.state.meta.isValid;
 
                       return (
                         <Field data-invalid={isInvalid}>
@@ -124,7 +125,7 @@ export function ForgotPasswordForm({
                   />
                 </FieldGroup>
                 {submitError ? (
-                  <p className="text-sm text-destructive">{submitError}</p>
+                  <p className="text-destructive text-sm">{submitError}</p>
                 ) : null}
                 <Button
                   type="submit"

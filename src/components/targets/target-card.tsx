@@ -94,7 +94,7 @@ export function TargetCard({ target, onUpdated, onDeleted }: TargetCardProps) {
               </AlertDialogDescription>
             </AlertDialogHeader>
             {deleteError ? (
-              <p className="text-sm text-destructive">{deleteError}</p>
+              <p className="text-destructive text-sm">{deleteError}</p>
             ) : null}
             <AlertDialogFooter>
               <AlertDialogCancel />

@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import type { Target } from "@/types/global.types";
 import { TargetCard } from "@/components/targets/target-card";
@@ -31,7 +32,12 @@ function Dashboard() {
     setIsLoggingOut(true);
     try {
       await logOut();
+      toast.success("You have been logged out");
       await navigate({ to: "/" });
+    } catch (err: unknown) {
+      toast.error("Logout failed", {
+        description: err instanceof Error ? err.message : "Please try again.",
+      });
     } finally {
       setIsLoggingOut(false);
     }
