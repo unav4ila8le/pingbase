@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
 
 import type { Target } from "@/types/global.types";
 import { Button } from "@/components/ui/button";
@@ -10,8 +12,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { createTarget } from "@/server/targets/create-target";
@@ -49,6 +57,13 @@ const getInitialValues = (target?: Target): TargetDialogValues => ({
   exclusions: listToString(target?.exclusions),
 });
 
+const targetSchema = z.object({
+  name: z.string().min(1, "Name is required."),
+  description: z.string().min(1, "Description is required."),
+  keywords: z.string(),
+  exclusions: z.string(),
+});
+
 export function TargetDialog({
   mode,
   trigger,
@@ -57,10 +72,43 @@ export function TargetDialog({
 }: TargetDialogProps) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const [values, setValues] = useState<TargetDialogValues>(() =>
-    getInitialValues(target),
-  );
+  const form = useForm({
+    defaultValues: getInitialValues(target),
+    validators: {
+      onSubmit: targetSchema,
+    },
+    onSubmit: async ({ value }) => {
+      setError(null);
+
+      try {
+        const payload = {
+          name: value.name.trim(),
+          description: value.description.trim(),
+          keywords: normalizeList(value.keywords ?? ""),
+          exclusions: normalizeList(value.exclusions ?? ""),
+        };
+
+        if (mode === "edit" && !target) {
+          throw new Error("Target not found.");
+        }
+
+        const result =
+          mode === "create"
+            ? await createTarget({ data: payload })
+            : await updateTarget({
+              data: {
+                id: target?.id ?? "",
+                ...payload,
+              },
+            });
+
+        onSuccess?.(result);
+        setOpen(false);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Something went wrong.");
+      }
+    },
+  });
 
   const title = useMemo(
     () => (mode === "create" ? "New target" : "Edit target"),
@@ -76,46 +124,10 @@ export function TargetDialog({
 
   useEffect(() => {
     if (open) {
-      setValues(getInitialValues(target));
+      form.reset(getInitialValues(target));
       setError(null);
     }
-  }, [open, target]);
-
-  const handleChange = (field: keyof TargetDialogValues, value: string) => {
-    setValues((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSaving(true);
-    setError(null);
-
-    try {
-      const payload = {
-        name: values.name.trim(),
-        description: values.description.trim(),
-        keywords: normalizeList(values.keywords),
-        exclusions: normalizeList(values.exclusions),
-      };
-
-      const result =
-        mode === "create"
-          ? await createTarget({ data: payload })
-          : await updateTarget({
-              data: {
-                id: target?.id ?? "",
-                ...payload,
-              },
-            });
-
-      onSuccess?.(result);
-      setOpen(false);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  }, [form, open, target]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -125,53 +137,139 @@ export function TargetDialog({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <form className="grid gap-4" onSubmit={handleSubmit}>
-          <div className="grid gap-2">
-            <Label htmlFor="target-name">Name</Label>
-            <Input
-              id="target-name"
-              required
-              value={values.name}
-              onChange={(event) => handleChange("name", event.target.value)}
-              placeholder="Foliofox"
+        <form
+          className="grid gap-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void form.handleSubmit();
+          }}
+        >
+          <FieldGroup>
+            <form.Field
+              name="name"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      required
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      aria-invalid={isInvalid}
+                      placeholder="Foliofox"
+                    />
+                    {isInvalid ? (
+                      <FieldError errors={field.state.meta.errors} />
+                    ) : null}
+                  </Field>
+                );
+              }}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="target-description">Description</Label>
-            <Textarea
-              id="target-description"
-              required
-              value={values.description}
-              onChange={(event) =>
-                handleChange("description", event.target.value)
-              }
-              placeholder="AI-powered portfolio intelligence for personal finance enthusiasts."
+            <form.Field
+              name="description"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      required
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      aria-invalid={isInvalid}
+                      placeholder="AI-powered portfolio intelligence for personal finance enthusiasts."
+                    />
+                    {isInvalid ? (
+                      <FieldError errors={field.state.meta.errors} />
+                    ) : null}
+                  </Field>
+                );
+              }}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="target-keywords">Keywords (optional)</Label>
-            <Input
-              id="target-keywords"
-              value={values.keywords}
-              onChange={(event) => handleChange("keywords", event.target.value)}
-              placeholder="foliofox, net worth, portfolio tracker"
+            <form.Field
+              name="keywords"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Keywords (optional)
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      aria-invalid={isInvalid}
+                      placeholder="foliofox, net worth, portfolio tracker"
+                    />
+                    <FieldDescription>
+                      Comma-separated keywords to refine discovery.
+                    </FieldDescription>
+                    {isInvalid ? (
+                      <FieldError errors={field.state.meta.errors} />
+                    ) : null}
+                  </Field>
+                );
+              }}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="target-exclusions">Exclusions (optional)</Label>
-            <Input
-              id="target-exclusions"
-              value={values.exclusions}
-              onChange={(event) =>
-                handleChange("exclusions", event.target.value)
-              }
-              placeholder="jobs, giveaway, spam"
+            <form.Field
+              name="exclusions"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Exclusions (optional)
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      aria-invalid={isInvalid}
+                      placeholder="jobs, giveaway, spam"
+                    />
+                    <FieldDescription>
+                      Comma-separated terms that should be ignored.
+                    </FieldDescription>
+                    {isInvalid ? (
+                      <FieldError errors={field.state.meta.errors} />
+                    ) : null}
+                  </Field>
+                );
+              }}
             />
-          </div>
-          {error ? <p className="text-sm text-red-500">{error}</p> : null}
+          </FieldGroup>
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
           <DialogFooter showCloseButton>
-            <Button type="submit" disabled={isSaving}>
-              {isSaving ? (
+            <Button type="submit" disabled={form.state.isSubmitting}>
+              {form.state.isSubmitting ? (
                 <>
                   <Spinner /> Saving...
                 </>
