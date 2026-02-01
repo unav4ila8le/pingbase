@@ -18,6 +18,7 @@ The MVP focuses on:
 - periodic signal collection
 - relevance scoring via LLM
 - a simple dashboard to review signals
+- multi-user support with strict RLS
 
 Automated posting or replies are explicitly out of scope.
 
@@ -30,6 +31,8 @@ Automated posting or replies are explicitly out of scope.
 A **Target** represents what the user wants to receive signals for.
 
 The system should **not assume** that a Target is strictly a “brand”.
+
+**DB naming (preferred):** `targets` and `signals`.
 All logic and naming should remain flexible.
 
 ---
@@ -50,11 +53,12 @@ When creating a new Target, the user provides:
 
 - **Keywords / Phrases** (optional)  
   Terms strongly associated with the Target.  
-  These guide discovery but are **not strict filters**.
+  These guide discovery and LLM context but are **not strict filters**.
 
 - **Exclusions** (optional)  
   Words or phrases that usually indicate irrelevant signals  
-  (e.g. giveaways, job postings, spam).
+  (e.g. giveaways, job postings, spam).  
+  These guide discovery and LLM context but are **not strict filters**.
 
 ---
 
@@ -111,15 +115,18 @@ Telegram integration is **not part of MVP**, but the UI should allow for it late
 
 ## Signal Acceptance Threshold
 
-- Default minimum score to store a signal: **70**
-- This value may become configurable per Target later.
-- For MVP, 70 can be treated as a global default.
+- Default minimum score to **show to users**: **70**
+- Store signals for auditing starting at **40**
+- For MVP, thresholds are global defaults (per-target settings later).
 
 ---
 
 ## Signal Data Model (MVP)
 
 For each stored signal, persist:
+
+- **target_id**  
+  Foreign key to the Target that matched (signals are duplicated per Target).
 
 - **platform**  
   (e.g. `reddit`)
@@ -160,13 +167,15 @@ For each stored signal, persist:
   JSON blob containing the original platform response.  
   Stored for auditing, debugging, and potential re-scoring.
 
-UI rule: display **title if present**, otherwise display `content_excerpt`.
+UI rule: display **title if present**, otherwise display `content_excerpt`.  
+UI rule: show scores **>= 70**; scores **40–69** are hidden but retained.
 
 ---
 
 ## Reddit Scope (MVP)
 
 - Reddit is the only source in MVP.
+- Use the official Reddit API.
 - The initial scope should be **as open as possible** while remaining practical.
 - Discovery can be based on:
   - broad subreddit coverage
@@ -180,7 +189,7 @@ The system should be designed so that additional sources can be added later.
 
 1. Periodic scan (~every 15 minutes)
 2. Fetch new posts/comments from Reddit
-3. Deduplicate using platform + external_id
+3. Deduplicate using platform + external_id + target_id
 4. Evaluate relevance using an LLM
 5. Assign score and reason
 6. Store accepted signals
@@ -196,6 +205,27 @@ The system should be designed so that additional sources can be added later.
 - No teams or roles
 - No billing
 - No advanced analytics
+
+---
+
+## Storage & Retention
+
+- Retain signals for **30 days** (prune older data).
+- Raw payloads follow the same retention window.
+
+---
+
+## LLM Requirements
+
+- Structured output (JSON) for `score` + `reason` at minimum.
+- Use Target name, description, keywords, and exclusions in the prompt.
+
+---
+
+## Scheduling Constraint
+
+- The periodic scan should run via **app-level cron**, not database cron.
+- The solution should be portable across hosts (Netlify/Cloudflare/Railway).
 
 ---
 
@@ -218,3 +248,13 @@ The coding agent is expected to ask about:
 - How much historical data to retain
 
 These are intentionally left open.
+
+---
+
+## Draft Phases (Internal)
+
+1. **Foundations**: data model, RLS, supabase types, repo conventions, AGENTS.md
+2. **Targets**: CRUD, dashboard cards, routing for target detail
+3. **Signals UI**: target page table + status updates + filtering
+4. **Ingestion**: Reddit fetch + dedupe + LLM scoring + persistence
+5. **Ops**: app-level cron, retention cleanup, error logging
