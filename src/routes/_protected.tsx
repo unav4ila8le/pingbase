@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { getClaims } from "@/server/auth/get-claims";
 import { fetchUser } from "@/server/auth/fetch-user";
 
@@ -21,4 +21,13 @@ export const Route = createFileRoute("/_protected")({
       claims,
     };
   },
+  component: ProtectedLayout,
 });
+
+function ProtectedLayout() {
+  return (
+    <main className="mx-auto min-h-svh w-full max-w-5xl p-4">
+      <Outlet />
+    </main>
+  );
+}

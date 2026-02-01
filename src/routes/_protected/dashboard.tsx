@@ -46,7 +46,7 @@ function Dashboard() {
   const hasTargets = useMemo(() => targets.length > 0, [targets.length]);
 
   return (
-    <div className="flex flex-col gap-6 p-6 md:p-10">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Targets</h1>

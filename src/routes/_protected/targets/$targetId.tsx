@@ -25,7 +25,7 @@ function TargetDetail() {
   const { target, signals } = Route.useLoaderData();
 
   return (
-    <div className="flex flex-col gap-6 p-6 md:p-10">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-4">
         <Button
           variant="outline"
