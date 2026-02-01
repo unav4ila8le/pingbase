@@ -7,13 +7,14 @@
 - Deployment: host-agnostic (Netlify/Cloudflare/Railway/Vercel compatible).
 - Canonical data model: `targets` and `signals` (signals duplicate per target).
 - MVP retention: 30 days for signals and raw payloads.
+- LLM: AI SDK 6 with OpenAI as the initial provider (model-agnostic by design).
 
 ## Development Principles
 
 - Favor server-first patterns (route loaders, `beforeLoad`, `createServerFn`).
 - Keep server logic in `src/server/`; keep shared utilities in `src/lib/`.
 - Keep Supabase usage explicit and typed; avoid hidden global clients.
-- Minimize client-only code; use it only for browser APIs or auth forms.
+- Avoid `use client`/`use server` directives (TanStack Start does not require them).
 - Optimize for clarity and correctness over abstraction.
 
 ## Architecture
@@ -25,6 +26,7 @@
   - Server: `src/lib/supabase/server.ts`
 - Server-side actions/loaders should call `createServerFn` and use the server client.
 - Auth gating uses `beforeLoad` in protected routes.
+- Shared protected layout lives in `src/routes/_protected.tsx` and should render `Outlet`.
 
 ## Data Model Notes
 
@@ -44,6 +46,7 @@
 - Structured JSON output is required for `score` + `reason`.
 - Use Target name, description, keywords, and exclusions for discovery + prompt context.
 - Ingestion is modular; only Reddit for MVP but designed for new sources later.
+- Structured output uses `generateText` with `Output.object()` (AI SDK 6 best practice).
 
 ## Scheduling & Retention
 
@@ -75,7 +78,7 @@ import { TargetCard } from "@/components/targets/target-card";
 import { fetchTargets } from "@/server/targets/fetch-targets";
 
 // 5. Local Files and Types
-import type { Target } from "@/types/target.types";
+import type { Target } from "@/types/global.types";
 ```
 
 ## File Naming
