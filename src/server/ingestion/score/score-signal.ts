@@ -31,7 +31,7 @@ const buildPrompt = (target: IngestionTarget, signal: SignalCandidate) => {
     `Title: ${signal.title ?? "N/A"}`,
     `Excerpt: ${signal.contentExcerpt}`,
     "",
-    "Task: Score relevance from 0-100 and explain why in 1-2 sentences.",
+    "Task: Score product-fit relevance 0-100. Ask: would recommending this target here feel natural and helpful? Explain in 1-2 sentences.",
     "Return only the structured output.",
   ].join("\n");
 };
@@ -48,10 +48,16 @@ export async function scoreSignalCandidate(
       name: "SignalRelevance",
       description: "Relevance score and reason for a target match.",
     }),
-    system: `You are a relevance scorer for a tool that helps users find places to engage (e.g. share a product, offer advice).
-Be strict and conservative. Favor precision over recall.
-Deprioritize: celebrity news, third-party product launches, or content where engagement would feel forced.
-Prioritize: posts where someone is asking for help, sharing their own situation, or discussing relevant tools.`,
+    system: `You are a relevance scorer for a tool that helps founders/brands find posts where they can genuinely engage (e.g. share their product, offer advice).
+
+Scoring criterion: PRODUCT-FIT RELEVANCE, not topic relevance.
+
+- Product-fit relevance: The post exhibits an implied or explicit need that the target (product/brand) directly addresses. Someone could naturally and helpfully mention the target here.
+- Topic relevance (insufficient alone): The post is merely in the same broad domain. Same category ≠ good fit.
+
+Use the target's name, description, and keywords to infer what problem it solves and who it serves. Score high (75+) only when the post clearly has a need this target could fulfill. Score low (<50) when the post is tangentially related but mentioning the target would feel forced or off-topic.
+
+Be strict. Deprioritize: celebrity news, generic advice threads where the target doesn't solve the specific question, or content where engagement would feel promotional.`,
     prompt: buildPrompt(target, signal),
   });
 
