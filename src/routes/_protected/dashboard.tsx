@@ -9,15 +9,22 @@ import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { fetchTargets } from "@/server/targets/fetch-targets";
+import { fetchTargetSignalCounts } from "@/server/signals/fetch-target-signal-counts";
 import { logOut } from "@/server/auth/log-out";
 
 export const Route = createFileRoute("/_protected/dashboard")({
   component: Dashboard,
   loader: async ({ context }) => {
     const targets = await fetchTargets();
+    const targetIds = targets.map((t) => t.id);
+    const counts =
+      targetIds.length > 0
+        ? await fetchTargetSignalCounts({ data: { targetIds } })
+        : {};
     return {
       user: context.user,
       targets,
+      signalCounts: counts,
     };
   },
 });
@@ -90,6 +97,7 @@ function Dashboard() {
             <TargetCard
               key={target.id}
               target={target}
+              signalCounts={data.signalCounts[target.id]}
               onUpdated={(updated) =>
                 setTargets((prev) =>
                   prev.map((item) => (item.id === updated.id ? updated : item)),

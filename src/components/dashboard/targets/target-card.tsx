@@ -29,11 +29,17 @@ import { deleteTarget } from "@/server/targets/delete-target";
 
 type TargetCardProps = {
   target: Target;
+  signalCounts?: { new: number; total: number };
   onUpdated: (target: Target) => void;
   onDeleted: (targetId: string) => void;
 };
 
-export function TargetCard({ target, onUpdated, onDeleted }: TargetCardProps) {
+export function TargetCard({
+  target,
+  signalCounts,
+  onUpdated,
+  onDeleted,
+}: TargetCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -58,12 +64,15 @@ export function TargetCard({ target, onUpdated, onDeleted }: TargetCardProps) {
         <CardDescription>{target.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
-        <div className="text-muted-foreground text-xs">0 new / 0 total</div>
+        <div className="text-muted-foreground text-xs">
+          {signalCounts ? `${signalCounts.new} new / ${signalCounts.total} total` : "0 new / 0 total"}
+        </div>
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2">
         <Button
           variant="default"
           size="sm"
+          nativeButton={false}
           render={
             <Link to="/targets/$targetId" params={{ targetId: target.id }}>
               View

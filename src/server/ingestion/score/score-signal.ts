@@ -43,7 +43,6 @@ export async function scoreSignalCandidate(
   const modelName = process.env.OPENAI_MODEL ?? "gpt-5-mini";
   const { output } = await generateText({
     model: openai(modelName),
-    temperature: 0,
     output: Output.object({
       schema: scoreSchema,
       name: "SignalRelevance",

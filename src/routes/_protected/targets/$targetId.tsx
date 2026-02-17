@@ -32,6 +32,7 @@ function TargetDetail() {
         <Button
           variant="outline"
           size="sm"
+          nativeButton={false}
           render={<Link to="/dashboard">Back</Link>}
         />
         <div>
