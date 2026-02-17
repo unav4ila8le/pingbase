@@ -38,6 +38,7 @@ export const fetchTargetSignals = createServerFn({ method: "GET" })
       )
       .eq("target_id", data.targetId)
       .eq("user_id", userData.user.id)
+      .gte("score", 70)
       .order("date_posted", { ascending: false });
 
     if (error) {

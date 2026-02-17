@@ -175,7 +175,7 @@ UI rule: show scores **>= 70**; scores **40–69** are hidden but retained.
 ## Reddit Scope (MVP)
 
 - Reddit is the only source in MVP.
-- Use the official Reddit API.
+- Use Reddit's public `.json` endpoints (no API key required). Reddit no longer issues API keys to the public; we use the `.json` URL suffix workaround (e.g. `reddit.com/search.json?q=...`, `reddit.com/r/{sub}/new.json`) with throttling (~7s between requests) to stay within unauthenticated rate limits (~10 req/min).
 - The initial scope should be **as open as possible** while remaining practical.
 - Discovery can be based on:
   - r/all new feed (light scan)
@@ -188,13 +188,13 @@ The system should be designed so that additional sources can be added later.
 ## Signal Collection Flow (High-Level)
 
 1. Periodic scan (~every 15 minutes)
-2. Fetch new posts/comments from Reddit
+2. Fetch via Reddit `.json` endpoints (search + subreddit/new)
 3. Filter out items older than `targets.created_at` (no backfill by default)
 4. Deduplicate using platform + external_id + target_id
 5. Evaluate relevance using an LLM
 6. Assign score and reason
-7. Store accepted signals
-8. Display in the dashboard
+7. Store accepted signals (score >= 40)
+8. Display in the dashboard (score >= 70)
 
 ---
 
@@ -213,6 +213,7 @@ The system should be designed so that additional sources can be added later.
 
 - Retain signals for **30 days** (prune older data).
 - Raw payloads follow the same retention window.
+- Retention cleanup runs via **Nitro scheduled task** (daily at midnight UTC).
 
 ---
 
@@ -227,7 +228,9 @@ The system should be designed so that additional sources can be added later.
 ## Scheduling Constraint
 
 - The periodic scan should run via **app-level cron**, not database cron.
+- We use Nitro scheduled tasks (`scheduledTasks`) for ingestion and retention jobs.
 - The solution should be portable across hosts (Netlify/Cloudflare/Railway).
+- **Serverless note:** Nitro scheduled tasks may not run natively on Netlify/Vercel; use platform cron (e.g. Netlify Scheduled Functions, Vercel Cron) to call a protected API route that runs the task.
 
 ---
 
@@ -245,11 +248,10 @@ The system should be designed so that additional sources can be added later.
 The coding agent is expected to ask about:
 
 - Final naming consistency (Target vs internal naming)
-- Reddit ingestion strategy details
 - LLM prompt design and output schema
 - How much historical data to retain
 
-These are intentionally left open.
+These are intentionally left open. (Reddit ingestion strategy: resolved — we use `.json` endpoints.)
 
 ---
 
@@ -258,5 +260,5 @@ These are intentionally left open.
 1. **Foundations**: data model, RLS, supabase types, repo conventions, AGENTS.md
 2. **Targets**: CRUD, dashboard cards, routing for target detail
 3. **Signals UI**: target page table + status updates + filtering
-4. **Ingestion**: Reddit fetch + dedupe + LLM scoring + persistence
-5. **Ops**: app-level cron, retention cleanup, error logging
+4. **Ingestion**: Reddit `.json` fetch + dedupe + LLM scoring + persistence
+5. **Ops**: Nitro ingestion task, retention cleanup, error logging

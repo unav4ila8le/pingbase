@@ -21,12 +21,12 @@ const config = defineConfig({
   ssr: {
     external: [
       "next-themes",
-      'sonner',
-      '@tanstack/react-form',
-      '@base-ui/react',
-      '@base-ui/utils'
-    ]
-  }
+      "sonner",
+      "@tanstack/react-form",
+      "@base-ui/react",
+      "@base-ui/utils",
+    ],
+  },
 });
 
 export default config;
