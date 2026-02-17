@@ -105,7 +105,7 @@ Signals are read-only in MVP (no replies or automation).
 
 On the same page or a secondary tab, the user can:
 
-- Edit Target fields (name, description, keywords, exclusions)
+- Edit Target fields (name, description, keywords, exclusions, subreddits)
 - View source configuration (read-only for MVP)
 - See last scan time
 
@@ -221,7 +221,7 @@ The system should be designed so that additional sources can be added later.
 
 - Use AI SDK 6 (provider-agnostic) with OpenAI as the initial provider.
 - Structured output (JSON) for `score` + `reason` at minimum.
-- Use Target name, description, keywords, and exclusions in the prompt.
+- Use Target name, description, keywords, exclusions, and subreddits in the prompt.
 
 ---
 

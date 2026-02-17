@@ -48,8 +48,10 @@ export async function scoreSignalCandidate(
       name: "SignalRelevance",
       description: "Relevance score and reason for a target match.",
     }),
-    system:
-      "You are a relevance scorer. Be strict and conservative. Favor precision over recall.",
+    system: `You are a relevance scorer for a tool that helps users find places to engage (e.g. share a product, offer advice).
+Be strict and conservative. Favor precision over recall.
+Deprioritize: celebrity news, third-party product launches, or content where engagement would feel forced.
+Prioritize: posts where someone is asking for help, sharing their own situation, or discussing relevant tools.`,
     prompt: buildPrompt(target, signal),
   });
 

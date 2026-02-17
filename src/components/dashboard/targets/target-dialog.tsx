@@ -33,6 +33,7 @@ type TargetDialogValues = {
   description: string;
   keywords: string;
   exclusions: string;
+  subreddits: string;
 };
 
 type TargetDialogProps = {
@@ -56,6 +57,7 @@ const getInitialValues = (target?: Target): TargetDialogValues => ({
   description: target?.description ?? "",
   keywords: listToString(target?.keywords),
   exclusions: listToString(target?.exclusions),
+  subreddits: listToString(target?.subreddits),
 });
 
 const targetSchema = z.object({
@@ -63,6 +65,7 @@ const targetSchema = z.object({
   description: z.string().min(1, "Description is required."),
   keywords: z.string(),
   exclusions: z.string(),
+  subreddits: z.string(),
 });
 
 export function TargetDialog({
@@ -84,6 +87,7 @@ export function TargetDialog({
           description: value.description.trim(),
           keywords: normalizeList(value.keywords ?? ""),
           exclusions: normalizeList(value.exclusions ?? ""),
+          subreddits: normalizeList(value.subreddits ?? ""),
         };
 
         if (mode === "edit" && !target) {
@@ -94,11 +98,11 @@ export function TargetDialog({
           mode === "create"
             ? await createTarget({ data: payload })
             : await updateTarget({
-                data: {
-                  id: target?.id ?? "",
-                  ...payload,
-                },
-              });
+              data: {
+                id: target?.id ?? "",
+                ...payload,
+              },
+            });
 
         onSuccess?.(result);
         if (mode === "create") {
@@ -265,6 +269,39 @@ export function TargetDialog({
                     />
                     <FieldDescription>
                       Comma-separated terms that should be ignored.
+                    </FieldDescription>
+                    {isInvalid ? (
+                      <FieldError errors={field.state.meta.errors} />
+                    ) : null}
+                  </Field>
+                );
+              }}
+            />
+            <form.Field
+              name="subreddits"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Subreddits (optional)
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      aria-invalid={isInvalid}
+                      placeholder="personalfinance, fire, bogleheads, dividends"
+                    />
+                    <FieldDescription>
+                      Comma-separated. When set, discovery runs only in these
+                      subreddits instead of global search.
                     </FieldDescription>
                     {isInvalid ? (
                       <FieldError errors={field.state.meta.errors} />

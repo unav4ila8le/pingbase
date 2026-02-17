@@ -8,6 +8,7 @@ type UpdateTargetInput = {
   description: string;
   keywords?: Array<string>;
   exclusions?: Array<string>;
+  subreddits?: Array<string>;
 };
 
 const parseTargetInput = (data: unknown): UpdateTargetInput => {
@@ -32,6 +33,12 @@ const parseTargetInput = (data: unknown): UpdateTargetInput => {
         .map((item) => item.trim())
         .filter(Boolean)
     : [];
+  const subreddits = Array.isArray(payload.subreddits)
+    ? payload.subreddits
+        .filter((item) => typeof item === "string")
+        .map((item) => item.trim().replace(/^r\//, ""))
+        .filter(Boolean)
+    : [];
 
   if (!id || !name || !description) {
     throw new Error("Id, name, and description are required.");
@@ -43,6 +50,7 @@ const parseTargetInput = (data: unknown): UpdateTargetInput => {
     description,
     keywords,
     exclusions,
+    subreddits,
   };
 };
 
@@ -63,6 +71,7 @@ export const updateTarget = createServerFn({ method: "POST" })
         description: data.description,
         keywords: data.keywords ?? [],
         exclusions: data.exclusions ?? [],
+        subreddits: data.subreddits ?? [],
         url: null,
       })
       .eq("id", data.id)

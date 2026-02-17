@@ -7,6 +7,7 @@ export type IngestionTarget = Pick<
   | "description"
   | "keywords"
   | "exclusions"
+  | "subreddits"
   | "created_at"
   | "user_id"
 >;

@@ -10,7 +10,7 @@ export async function fetchAllTargets(): Promise<Array<IngestionTarget>> {
 
   const { data, error } = await supabase
     .from("targets")
-    .select("id, name, description, keywords, exclusions, created_at, user_id");
+    .select("*");
 
   if (error) {
     throw new Error(`Failed to fetch targets: ${error.message}`);

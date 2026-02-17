@@ -44,7 +44,7 @@
 ## LLM & Ingestion
 
 - Structured JSON output is required for `score` + `reason`.
-- Use Target name, description, keywords, and exclusions for discovery + prompt context.
+- Use Target name, description, keywords, exclusions, and subreddits for discovery + prompt context.
 - Ingestion is modular; only Reddit for MVP but designed for new sources later.
 - Structured output uses `generateText` with `Output.object()` (AI SDK 6 best practice).
 
