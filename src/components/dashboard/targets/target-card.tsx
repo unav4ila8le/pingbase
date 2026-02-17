@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -26,6 +26,8 @@ import {
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { deleteTarget } from "@/server/targets/delete-target";
+
+import { cn } from "@/lib/utils";
 
 type TargetCardProps = {
   target: Target;
@@ -69,16 +71,13 @@ export function TargetCard({
         </div>
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2">
-        <Button
-          variant="default"
-          size="sm"
-          nativeButton={false}
-          render={
-            <Link to="/targets/$targetId" params={{ targetId: target.id }}>
-              View
-            </Link>
-          }
-        />
+        <Link
+          to="/targets/$targetId"
+          params={{ targetId: target.id }}
+          className={cn(buttonVariants({ variant: "default", size: "sm" }), "cursor-default")}
+        >
+          View
+        </Link>
         <TargetDialog
           mode="edit"
           target={target}

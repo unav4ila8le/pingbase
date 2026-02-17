@@ -1,8 +1,10 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Logo } from "@/components/logo/logo";
 import { getClaims } from "@/server/auth/get-claims";
+
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -27,21 +29,17 @@ function App() {
         </p>
         <div className="mt-6 flex gap-2">
           {isAuthenticated ? (
-            <Button
-              nativeButton={false}
-              render={<Link to="/dashboard">Dashboard</Link>}
-            />
+            <Link to="/dashboard" className={cn(buttonVariants(), "cursor-default")}>
+              Dashboard
+            </Link>
           ) : (
             <>
-              <Button
-                variant="outline"
-                nativeButton={false}
-                render={<Link to="/auth/login">Log in</Link>}
-              />
-              <Button
-                nativeButton={false}
-                render={<Link to="/auth/signup">Sign up</Link>}
-              />
+              <Link to="/auth/login" className={cn(buttonVariants({ variant: "outline" }), "cursor-default")}>
+                Log in
+              </Link>
+              <Link to="/auth/signup" className={cn(buttonVariants(), "cursor-default")}>
+                Sign up
+              </Link>
             </>
           )}
         </div>
