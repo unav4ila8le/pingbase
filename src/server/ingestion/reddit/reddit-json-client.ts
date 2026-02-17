@@ -102,7 +102,9 @@ function toSignalCandidate(thing: RedditThing): SignalCandidate | null {
   };
 }
 
-function parseListingToCandidates(listing: RedditListing): Array<SignalCandidate> {
+function parseListingToCandidates(
+  listing: RedditListing,
+): Array<SignalCandidate> {
   const children = listing.data?.children ?? [];
   const candidates: Array<SignalCandidate> = [];
   for (const child of children) {
