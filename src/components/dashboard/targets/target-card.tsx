@@ -1,6 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Fire03Icon } from "@hugeicons/core-free-icons";
+
 import { TargetDialog } from "./target-dialog";
 import type { Target } from "@/types/global.types";
 import {
@@ -63,12 +66,14 @@ export function TargetCard({
     <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle className="text-lg">{target.name}</CardTitle>
-        <CardDescription>{target.description}</CardDescription>
+        <CardDescription className="line-clamp-2">{target.description}</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1">
-        <div className="text-muted-foreground text-xs">
-          {signalCounts ? `${signalCounts.new} new / ${signalCounts.total} total` : "0 new / 0 total"}
-        </div>
+      <CardContent className="flex-1 flex items-end">
+        {signalCounts ?
+          <div className="text-green-600 text-sm flex items-center gap-1">
+            <HugeiconsIcon icon={Fire03Icon} className="size-5" />
+            <span>{signalCounts.new} new signals</span>
+          </div> : null}
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2">
         <Link
@@ -106,7 +111,7 @@ export function TargetCard({
             ) : null}
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+              <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className={buttonVariants({ variant: "destructive" })}>
                 {isDeleting ? (
                   <>
                     <Spinner /> Deleting...
