@@ -40,7 +40,7 @@ export async function scoreSignalCandidate(
   target: IngestionTarget,
   signal: SignalCandidate,
 ) {
-  const modelName = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
+  const modelName = process.env.OPENAI_MODEL ?? "gpt-5-mini";
   const { output } = await generateText({
     model: openai(modelName),
     temperature: 0,
