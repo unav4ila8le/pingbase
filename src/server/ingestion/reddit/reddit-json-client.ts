@@ -3,7 +3,7 @@ import type { SignalCandidate } from "@/server/ingestion/types";
 const REDDIT_BASE = "https://www.reddit.com";
 const USER_AGENT =
   "Mozilla/5.0 (compatible; Pingbase/1.0; +https://github.com/pingbase)";
-const DEFAULT_THROTTLE_MS = 7000;
+const DEFAULT_THROTTLE_MS = 5000;
 const CONTENT_EXCERPT_MAX = 500;
 
 let lastRequestTime = 0;
