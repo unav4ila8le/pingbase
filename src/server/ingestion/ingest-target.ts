@@ -7,19 +7,22 @@ import { fetchRedditCandidates } from "@/server/ingestion/reddit/fetch-reddit-si
 import { scoreSignalCandidate } from "@/server/ingestion/score/score-signal";
 import { persistSignals } from "@/server/ingestion/persist/persist-signals";
 
-const isAfterTargetCreation = (
+const HOURS_BEFORE_TARGET = 24;
+
+const isWithinValidWindow = (
   target: IngestionTarget,
   candidate: SignalCandidate,
 ) => {
   const createdAt = new Date(target.created_at).getTime();
+  const cutoff = createdAt - HOURS_BEFORE_TARGET * 60 * 60 * 1000;
   const postedAt = new Date(candidate.datePosted).getTime();
-  return postedAt >= createdAt;
+  return postedAt >= cutoff;
 };
 
 export async function ingestTarget(target: IngestionTarget) {
   const candidates = await fetchRedditCandidates(target);
   const freshCandidates = candidates.filter((candidate) =>
-    isAfterTargetCreation(target, candidate),
+    isWithinValidWindow(target, candidate),
   );
 
   const scored: Array<ScoredSignalCandidate> = [];

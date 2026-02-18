@@ -189,7 +189,7 @@ The system should be designed so that additional sources can be added later.
 
 1. Periodic scan (~every 15 minutes)
 2. Fetch via Reddit `.json` endpoints (search + subreddit/new)
-3. Filter out items older than `targets.created_at` (no backfill by default)
+3. Filter out items older than 24 hours before `targets.created_at` (fresh enough for initial test runs)
 4. Deduplicate using platform + external_id + target_id
 5. Evaluate relevance using an LLM
 6. Assign score and reason
