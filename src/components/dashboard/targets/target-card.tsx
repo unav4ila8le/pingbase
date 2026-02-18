@@ -66,20 +66,26 @@ export function TargetCard({
     <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle className="text-lg">{target.name}</CardTitle>
-        <CardDescription className="line-clamp-2">{target.description}</CardDescription>
+        <CardDescription className="line-clamp-2">
+          {target.description}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 flex items-end">
-        {signalCounts ?
-          <div className="text-green-600 text-sm flex items-center gap-1">
+      <CardContent className="flex flex-1 items-end">
+        {signalCounts ? (
+          <div className="flex items-center gap-1 text-sm text-green-600">
             <HugeiconsIcon icon={Fire03Icon} className="size-5" />
             <span>{signalCounts.new} new signals</span>
-          </div> : null}
+          </div>
+        ) : null}
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2">
         <Link
           to="/targets/$targetId"
           params={{ targetId: target.id }}
-          className={cn(buttonVariants({ variant: "default", size: "sm" }), "cursor-default")}
+          className={cn(
+            buttonVariants({ variant: "default", size: "sm" }),
+            "cursor-default",
+          )}
         >
           View
         </Link>
@@ -111,7 +117,11 @@ export function TargetCard({
             ) : null}
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className={buttonVariants({ variant: "destructive" })}>
+              <AlertDialogAction
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className={buttonVariants({ variant: "destructive" })}
+              >
                 {isDeleting ? (
                   <>
                     <Spinner /> Deleting...

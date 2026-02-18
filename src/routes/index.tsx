@@ -29,15 +29,27 @@ function App() {
         </p>
         <div className="mt-6 flex gap-2">
           {isAuthenticated ? (
-            <Link to="/dashboard" className={cn(buttonVariants(), "cursor-default")}>
+            <Link
+              to="/dashboard"
+              className={cn(buttonVariants(), "cursor-default")}
+            >
               Dashboard
             </Link>
           ) : (
             <>
-              <Link to="/auth/login" className={cn(buttonVariants({ variant: "outline" }), "cursor-default")}>
+              <Link
+                to="/auth/login"
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "cursor-default",
+                )}
+              >
                 Log in
               </Link>
-              <Link to="/auth/signup" className={cn(buttonVariants(), "cursor-default")}>
+              <Link
+                to="/auth/signup"
+                className={cn(buttonVariants(), "cursor-default")}
+              >
                 Sign up
               </Link>
             </>

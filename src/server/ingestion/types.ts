@@ -9,6 +9,7 @@ export type IngestionTarget = Pick<
   | "exclusions"
   | "subreddits"
   | "created_at"
+  | "last_scanned_at"
   | "user_id"
 >;
 

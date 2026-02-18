@@ -2,8 +2,11 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import type { SignalSummary } from "@/types/global.types";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const signalColumns: Array<ColumnDef<SignalSummary>> = [
   {
@@ -12,11 +15,7 @@ export const signalColumns: Array<ColumnDef<SignalSummary>> = [
     cell: ({ row }) => {
       const value = row.getValue("date_posted");
       const date = value ? new Date(String(value)) : null;
-      return (
-        <span>
-          {date ? date.toLocaleDateString() : "--"}
-        </span>
-      );
+      return <span>{date ? date.toLocaleDateString() : "--"}</span>;
     },
   },
   {
@@ -34,11 +33,16 @@ export const signalColumns: Array<ColumnDef<SignalSummary>> = [
       return (
         <div className="flex w-40 sm:w-80 lg:w-96">
           <Tooltip>
-            <TooltipTrigger render={<div className="whitespace-normal line-clamp-2">
+            <TooltipTrigger
+              render={
+                <div className="line-clamp-2 whitespace-normal">
+                  {signal.title ?? signal.content_excerpt}
+                </div>
+              }
+            ></TooltipTrigger>
+            <TooltipContent>
               {signal.title ?? signal.content_excerpt}
-            </div>}>
-            </TooltipTrigger>
-            <TooltipContent>{signal.title ?? signal.content_excerpt}</TooltipContent>
+            </TooltipContent>
           </Tooltip>
         </div>
       );
@@ -47,9 +51,7 @@ export const signalColumns: Array<ColumnDef<SignalSummary>> = [
   {
     accessorKey: "score",
     header: "Score",
-    cell: ({ row }) => (
-      <span>{row.original.score}%</span>
-    ),
+    cell: ({ row }) => <span>{row.original.score}%</span>,
   },
   {
     id: "link",

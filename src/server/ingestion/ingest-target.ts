@@ -6,24 +6,33 @@ import type {
 import { fetchRedditCandidates } from "@/server/ingestion/reddit/fetch-reddit-signals";
 import { scoreSignalCandidate } from "@/server/ingestion/score/score-signal";
 import { persistSignals } from "@/server/ingestion/persist/persist-signals";
+import { updateTargetLastScannedAt } from "@/server/targets/update-target-last-scanned-at";
 
 const HOURS_BEFORE_TARGET = 24;
 const LLM_CONCURRENCY = 8;
 
-const isWithinValidWindow = (
-  target: IngestionTarget,
-  candidate: SignalCandidate,
-) => {
+function getCutoffTimestamp(target: IngestionTarget): number {
+  if (target.last_scanned_at) {
+    return new Date(target.last_scanned_at).getTime();
+  }
   const createdAt = new Date(target.created_at).getTime();
-  const cutoff = createdAt - HOURS_BEFORE_TARGET * 60 * 60 * 1000;
+  return createdAt - HOURS_BEFORE_TARGET * 60 * 60 * 1000;
+}
+
+function isNewerThanCutoff(
+  candidate: SignalCandidate,
+  cutoffMs: number,
+): boolean {
   const postedAt = new Date(candidate.datePosted).getTime();
-  return postedAt >= cutoff;
-};
+  return postedAt > cutoffMs;
+}
 
 export async function ingestTarget(target: IngestionTarget) {
+  const cutoffMs = getCutoffTimestamp(target);
+
   const candidates = await fetchRedditCandidates(target);
-  const freshCandidates = candidates.filter((candidate) =>
-    isWithinValidWindow(target, candidate),
+  const freshCandidates = candidates.filter((c) =>
+    isNewerThanCutoff(c, cutoffMs),
   );
 
   const scored: Array<ScoredSignalCandidate> = [];
@@ -42,5 +51,9 @@ export async function ingestTarget(target: IngestionTarget) {
     scored.push(...results);
   }
 
-  return persistSignals(target, scored);
+  const result = await persistSignals(target, scored);
+
+  await updateTargetLastScannedAt(target.id);
+
+  return result;
 }

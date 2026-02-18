@@ -31,7 +31,13 @@ function TargetDetail() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-4">
-        <Link to="/dashboard" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "cursor-default")}>
+        <Link
+          to="/dashboard"
+          className={cn(
+            buttonVariants({ variant: "outline", size: "sm" }),
+            "cursor-default",
+          )}
+        >
           Back
         </Link>
         <div>

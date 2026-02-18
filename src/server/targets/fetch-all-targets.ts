@@ -8,9 +8,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 export async function fetchAllTargets(): Promise<Array<IngestionTarget>> {
   const supabase = createServiceClient();
 
-  const { data, error } = await supabase
-    .from("targets")
-    .select("*");
+  const { data, error } = await supabase.from("targets").select("*");
 
   if (error) {
     throw new Error(`Failed to fetch targets: ${error.message}`);

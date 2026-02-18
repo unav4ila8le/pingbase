@@ -148,7 +148,7 @@ For each stored signal, persist:
 
 - **content_excerpt**  
   Required.  
-  Short excerpt (~280–500 chars) from the post body or comment body.
+  Short excerpt (~280–800 chars) from the post body or comment body.
 
 - **date_posted**  
   Original creation timestamp.
@@ -175,7 +175,7 @@ UI rule: show scores **>= 70**; scores **40–69** are hidden but retained.
 ## Reddit Scope (MVP)
 
 - Reddit is the only source in MVP.
-- Use Reddit's public `.json` endpoints (no API key required). Reddit no longer issues API keys to the public; we use the `.json` URL suffix workaround (e.g. `reddit.com/search.json?q=...`, `reddit.com/r/{sub}/new.json`) with throttling (~7s between requests) to stay within unauthenticated rate limits (~10 req/min).
+- Use Reddit's public `.json` endpoints (no API key required). Reddit no longer issues API keys to the public; we use the `.json` URL suffix workaround (e.g. `reddit.com/search.json?q=...`, `reddit.com/r/{sub}/new.json`) with throttling (~5s between requests) to stay within unauthenticated rate limits.
 - The initial scope should be **as open as possible** while remaining practical.
 - Discovery can be based on:
   - r/all new feed (light scan)
@@ -189,9 +189,9 @@ The system should be designed so that additional sources can be added later.
 
 1. Periodic scan (~every 15 minutes)
 2. Fetch via Reddit `.json` endpoints (search + subreddit/new)
-3. Filter out items older than 24 hours before `targets.created_at` (fresh enough for initial test runs)
+3. **Time window:** Only process posts newer than `targets.last_scanned_at`. First run (null): use 24 hours before `targets.created_at` as cutoff. After each run, set `last_scanned_at` to now.
 4. Deduplicate using platform + external_id + target_id
-5. Evaluate relevance using an LLM
+5. Evaluate relevance using an LLM (actionability-focused; score candidates in parallel, e.g. 5–10 concurrent)
 6. Assign score and reason
 7. Store accepted signals (score >= 40)
 8. Display in the dashboard (score >= 70)
@@ -222,6 +222,8 @@ The system should be designed so that additional sources can be added later.
 - Use AI SDK 6 (provider-agnostic) with OpenAI as the initial provider.
 - Structured output (JSON) for `score` + `reason` at minimum.
 - Use Target name, description, keywords, exclusions, and subreddits in the prompt.
+- **Scoring criterion:** ACTIONABILITY — score high only when the post has a specific question/need the target addresses and a reply would feel helpful, not promotional. Deprioritize daily threads, meta posts, generic discussions.
+- **Performance:** Score candidates in parallel (e.g. 5–10 concurrent calls) instead of sequentially.
 
 ---
 

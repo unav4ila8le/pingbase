@@ -98,11 +98,11 @@ export function TargetDialog({
           mode === "create"
             ? await createTarget({ data: payload })
             : await updateTarget({
-              data: {
-                id: target?.id ?? "",
-                ...payload,
-              },
-            });
+                data: {
+                  id: target?.id ?? "",
+                  ...payload,
+                },
+              });
 
         onSuccess?.(result);
         if (mode === "create") {

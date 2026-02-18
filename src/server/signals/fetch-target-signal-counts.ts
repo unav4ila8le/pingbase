@@ -1,10 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@/lib/supabase/server";
 
-export type SignalCounts = Record<
-  string,
-  { new: number; total: number }
->;
+export type SignalCounts = Record<string, { new: number; total: number }>;
 
 type FetchCountsInput = {
   targetIds: Array<string>;
@@ -16,7 +13,9 @@ const parseInput = (data: unknown): FetchCountsInput => {
   }
   const payload = data as Record<string, unknown>;
   const targetIds = Array.isArray(payload.targetIds)
-    ? (payload.targetIds as Array<string>).filter((id) => typeof id === "string")
+    ? (payload.targetIds as Array<string>).filter(
+        (id) => typeof id === "string",
+      )
     : [];
   return { targetIds };
 };

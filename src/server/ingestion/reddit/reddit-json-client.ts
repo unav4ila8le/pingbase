@@ -4,7 +4,7 @@ const REDDIT_BASE = "https://www.reddit.com";
 const USER_AGENT =
   "Mozilla/5.0 (compatible; Pingbase/1.0; +https://github.com/pingbase)";
 const DEFAULT_THROTTLE_MS = 5000;
-const CONTENT_EXCERPT_MAX = 500;
+const CONTENT_EXCERPT_MAX = 800;
 
 let lastRequestTime = 0;
 
