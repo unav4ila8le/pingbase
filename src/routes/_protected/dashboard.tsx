@@ -8,9 +8,9 @@ import { TargetDialog } from "@/components/dashboard/targets/target-dialog";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { fetchTargets } from "@/server/targets/fetch-targets";
-import { fetchTargetSignalCounts } from "@/server/signals/fetch-target-signal-counts";
-import { logOut } from "@/server/auth/log-out";
+import { fetchTargets } from "@/backend/targets/fetch-targets";
+import { fetchTargetSignalCounts } from "@/backend/signals/fetch-target-signal-counts";
+import { logOut } from "@/backend/auth/log-out";
 
 export const Route = createFileRoute("/_protected/dashboard")({
   component: Dashboard,

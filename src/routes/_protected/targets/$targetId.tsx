@@ -3,8 +3,8 @@ import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { signalColumns } from "@/components/dashboard/signals/table/signal-columns";
 import { DataTable } from "@/components/ui/custom/data-table";
 import { buttonVariants } from "@/components/ui/button";
-import { fetchTarget } from "@/server/targets/fetch-target";
-import { fetchTargetSignals } from "@/server/signals/fetch-target-signals";
+import { fetchTarget } from "@/backend/targets/fetch-target";
+import { fetchTargetSignals } from "@/backend/signals/fetch-target-signals";
 
 import { cn } from "@/lib/utils";
 

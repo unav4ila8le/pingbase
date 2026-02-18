@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { SignUpForm } from "@/components/auth/signup-form";
 import { Logo } from "@/components/logo/logo";
-import { getClaims } from "@/server/auth/get-claims";
+import { getClaims } from "@/backend/auth/get-claims";
 
 export const Route = createFileRoute("/auth/signup")({
   beforeLoad: async () => {

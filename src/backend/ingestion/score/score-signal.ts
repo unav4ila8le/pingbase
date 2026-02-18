@@ -5,7 +5,7 @@ import { openai } from "@ai-sdk/openai";
 import type {
   IngestionTarget,
   SignalCandidate,
-} from "@/server/ingestion/types";
+} from "@/backend/ingestion/types";
 
 const scoreSchema = z.object({
   score: z.number().int().min(0).max(100),

@@ -1,4 +1,4 @@
-import type { SignalCandidate } from "@/server/ingestion/types";
+import type { SignalCandidate } from "@/backend/ingestion/types";
 
 const REDDIT_BASE = "https://www.reddit.com";
 const USER_AGENT =

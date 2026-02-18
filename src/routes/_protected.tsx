@@ -1,6 +1,6 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { getClaims } from "@/server/auth/get-claims";
-import { fetchUser } from "@/server/auth/fetch-user";
+import { getClaims } from "@/backend/auth/get-claims";
+import { fetchUser } from "@/backend/auth/fetch-user";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async () => {

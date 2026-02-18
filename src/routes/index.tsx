@@ -2,7 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 
 import { buttonVariants } from "@/components/ui/button";
 import { Logo } from "@/components/logo/logo";
-import { getClaims } from "@/server/auth/get-claims";
+import { getClaims } from "@/backend/auth/get-claims";
 
 import { cn } from "@/lib/utils";
 

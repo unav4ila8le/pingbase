@@ -2,11 +2,11 @@ import type {
   IngestionTarget,
   ScoredSignalCandidate,
   SignalCandidate,
-} from "@/server/ingestion/types";
-import { fetchRedditCandidates } from "@/server/ingestion/reddit/fetch-reddit-signals";
-import { scoreSignalCandidate } from "@/server/ingestion/score/score-signal";
-import { persistSignals } from "@/server/ingestion/persist/persist-signals";
-import { updateTargetLastScannedAt } from "@/server/targets/update-target-last-scanned-at";
+} from "@/backend/ingestion/types";
+import { fetchRedditCandidates } from "@/backend/ingestion/reddit/fetch-reddit-signals";
+import { scoreSignalCandidate } from "@/backend/ingestion/score/score-signal";
+import { persistSignals } from "@/backend/ingestion/persist/persist-signals";
+import { updateTargetLastScannedAt } from "@/backend/targets/update-target-last-scanned-at";
 
 const HOURS_BEFORE_TARGET = 24;
 const LLM_CONCURRENCY = 8;

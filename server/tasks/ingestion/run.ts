@@ -1,6 +1,6 @@
 import { defineTask } from "nitro/task";
-import { fetchAllTargets } from "../../../src/server/targets/fetch-all-targets";
-import { ingestTarget } from "../../../src/server/ingestion/ingest-target";
+import { fetchAllTargets } from "../../../src/backend/targets/fetch-all-targets";
+import { ingestTarget } from "../../../src/backend/ingestion/ingest-target";
 
 export type IngestionRunResult = {
   targetsProcessed: number;

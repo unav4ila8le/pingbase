@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/card";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { deleteTarget } from "@/server/targets/delete-target";
+import { deleteTarget } from "@/backend/targets/delete-target";
 
 import { cn } from "@/lib/utils";
 

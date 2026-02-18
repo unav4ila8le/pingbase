@@ -25,6 +25,7 @@
   - Browser: `src/lib/supabase/client.ts`
   - Server: `src/lib/supabase/server.ts`
 - Server-side actions/loaders should call `createServerFn` and use the server client.
+- Nitro's `server/` folder holds API routes and tasks; `src/backend/` holds application server logic (ingestion, targets, signals, auth).
 - Auth gating uses `beforeLoad` in protected routes.
 - Shared protected layout lives in `src/routes/_protected.tsx` and should render `Outlet`.
 
@@ -75,7 +76,7 @@ import { Button } from "@/components/ui/button";
 import { TargetCard } from "@/components/targets/target-card";
 
 // 4. Internal Modules
-import { fetchTargets } from "@/server/targets/fetch-targets";
+import { fetchTargets } from "@/api/targets/fetch-targets";
 
 // 5. Local Files and Types
 import type { Target } from "@/types/global.types";

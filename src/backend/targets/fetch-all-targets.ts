@@ -1,4 +1,4 @@
-import type { IngestionTarget } from "@/server/ingestion/types";
+import type { IngestionTarget } from "@/backend/ingestion/types";
 import { createServiceClient } from "@/lib/supabase/service";
 
 /**

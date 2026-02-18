@@ -1,7 +1,7 @@
 import type {
   IngestionTarget,
   ScoredSignalCandidate,
-} from "@/server/ingestion/types";
+} from "@/backend/ingestion/types";
 import type { Json } from "@/types/database.types";
 import { createServiceClient } from "@/lib/supabase/service";
 

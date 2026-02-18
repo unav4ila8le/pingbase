@@ -5,7 +5,7 @@ import {
 import type {
   IngestionTarget,
   SignalCandidate,
-} from "@/server/ingestion/types";
+} from "@/backend/ingestion/types";
 
 const PER_SUBREDDIT_LIMIT = 50;
 

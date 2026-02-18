@@ -23,8 +23,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { createTarget } from "@/server/targets/create-target";
-import { updateTarget } from "@/server/targets/update-target";
+import { createTarget } from "@/backend/targets/create-target";
+import { updateTarget } from "@/backend/targets/update-target";
 
 type TargetDialogMode = "create" | "edit";
 
