@@ -1,17 +1,16 @@
 import { defineTask } from "nitro/task";
 import { createServiceClient } from "../../../src/lib/supabase/service";
-
-const RETENTION_DAYS = 30;
+import { RETENTION_KNOBS } from "../../../src/backend/config/knobs";
 
 export default defineTask({
   meta: {
     name: "retention:cleanup",
-    description: "Delete signals older than 30 days",
+    description: `Delete signals older than ${RETENTION_KNOBS.signalRetentionDays} days`,
   },
   async run() {
     const supabase = createServiceClient();
     const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - RETENTION_DAYS);
+    cutoff.setDate(cutoff.getDate() - RETENTION_KNOBS.signalRetentionDays);
     const cutoffIso = cutoff.toISOString();
 
     const { data, error } = await supabase

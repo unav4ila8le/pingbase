@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { SIGNALS_KNOBS } from "@/backend/config/knobs";
 import { createClient } from "@/lib/supabase/server";
 
 export type SignalCounts = Record<string, { new: number; total: number }>;
@@ -39,7 +40,7 @@ export const fetchTargetSignalCounts = createServerFn({ method: "GET" })
       .select("target_id, status")
       .in("target_id", data.targetIds)
       .eq("user_id", userData.user.id)
-      .gte("score", 70);
+      .gte("score", SIGNALS_KNOBS.minScoreToShowInUi);
 
     if (error) {
       throw new Error(error.message);

@@ -2,17 +2,17 @@ import type {
   IngestionTarget,
   ScoredSignalCandidate,
 } from "@/backend/ingestion/types";
+import { INGESTION_KNOBS } from "@/backend/config/knobs";
 import type { Json } from "@/types/database.types";
 import { createServiceClient } from "@/lib/supabase/service";
-
-/** Minimum score to persist; scores 40–69 are stored but hidden from UI. */
-const MIN_SCORE_TO_STORE = 40;
 
 export async function persistSignals(
   target: IngestionTarget,
   signals: Array<ScoredSignalCandidate>,
 ): Promise<{ inserted: number }> {
-  const toStore = signals.filter((s) => s.score >= MIN_SCORE_TO_STORE);
+  const toStore = signals.filter(
+    (s) => s.score >= INGESTION_KNOBS.minScoreToStore,
+  );
   if (toStore.length === 0) return { inserted: 0 };
 
   const supabase = createServiceClient();

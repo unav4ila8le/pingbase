@@ -1,10 +1,9 @@
 import type { SignalCandidate } from "@/backend/ingestion/types";
+import { REDDIT_KNOBS } from "@/backend/config/knobs";
 
 const REDDIT_BASE = "https://www.reddit.com";
 const USER_AGENT =
   "Mozilla/5.0 (compatible; Pingbase/1.0; +https://github.com/pingbase)";
-const DEFAULT_THROTTLE_MS = 5000;
-const CONTENT_EXCERPT_MAX = 800;
 
 let lastRequestTime = 0;
 
@@ -41,7 +40,7 @@ type RedditListing = {
 };
 
 async function fetchRedditJson(url: string): Promise<RedditListing> {
-  await throttle(DEFAULT_THROTTLE_MS);
+  await throttle(REDDIT_KNOBS.requestThrottleMs);
 
   const response = await fetch(url, {
     headers: {
@@ -83,7 +82,7 @@ function toSignalCandidate(thing: RedditThing): SignalCandidate | null {
   const body = type === "post" ? (data.selftext ?? "") : (data.body ?? "");
   const contentSource = body || (title ?? "");
   const contentExcerpt =
-    truncate(contentSource, CONTENT_EXCERPT_MAX) || "(no content)";
+    truncate(contentSource, REDDIT_KNOBS.contentExcerptMax) || "(no content)";
 
   const datePosted = data.created_utc
     ? new Date(data.created_utc * 1000).toISOString()
@@ -118,7 +117,7 @@ export async function fetchRedditSearch(
   query: string,
   options?: { limit?: number; sort?: string },
 ): Promise<Array<SignalCandidate>> {
-  const limit = options?.limit ?? 100;
+  const limit = options?.limit ?? REDDIT_KNOBS.defaultRequestLimit;
   const sort = options?.sort ?? "new";
   const encoded = encodeURIComponent(query.trim());
   if (!encoded) return [];
@@ -131,7 +130,7 @@ export async function fetchRedditSubredditNew(
   subreddit: string,
   options?: { limit?: number },
 ): Promise<Array<SignalCandidate>> {
-  const limit = options?.limit ?? 100;
+  const limit = options?.limit ?? REDDIT_KNOBS.defaultRequestLimit;
   const clean = subreddit.replace(/^r\//, "").trim();
   if (!clean) return [];
   const url = `${REDDIT_BASE}/r/${clean}/new.json?limit=${limit}`;

@@ -3,20 +3,18 @@ import type {
   ScoredSignalCandidate,
   SignalCandidate,
 } from "@/backend/ingestion/types";
+import { INGESTION_KNOBS } from "@/backend/config/knobs";
 import { fetchRedditCandidates } from "@/backend/ingestion/reddit/fetch-reddit-signals";
 import { scoreSignalCandidate } from "@/backend/ingestion/score/score-signal";
 import { persistSignals } from "@/backend/ingestion/persist/persist-signals";
 import { updateTargetLastScannedAt } from "@/backend/targets/update-target-last-scanned-at";
-
-const HOURS_BEFORE_TARGET = 24;
-const LLM_CONCURRENCY = 8;
 
 function getCutoffTimestamp(target: IngestionTarget): number {
   if (target.last_scanned_at) {
     return new Date(target.last_scanned_at).getTime();
   }
   const createdAt = new Date(target.created_at).getTime();
-  return createdAt - HOURS_BEFORE_TARGET * 60 * 60 * 1000;
+  return createdAt - INGESTION_KNOBS.initialLookbackHours * 60 * 60 * 1000;
 }
 
 function isNewerThanCutoff(
@@ -36,8 +34,12 @@ export async function ingestTarget(target: IngestionTarget) {
   );
 
   const scored: Array<ScoredSignalCandidate> = [];
-  for (let i = 0; i < freshCandidates.length; i += LLM_CONCURRENCY) {
-    const chunk = freshCandidates.slice(i, i + LLM_CONCURRENCY);
+  for (
+    let i = 0;
+    i < freshCandidates.length;
+    i += INGESTION_KNOBS.llmConcurrency
+  ) {
+    const chunk = freshCandidates.slice(i, i + INGESTION_KNOBS.llmConcurrency);
     const results = await Promise.all(
       chunk.map(async (candidate) => {
         const scoreResult = await scoreSignalCandidate(target, candidate);

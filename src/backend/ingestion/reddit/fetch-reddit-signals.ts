@@ -2,12 +2,11 @@ import {
   fetchRedditSearch,
   fetchRedditSubredditNew,
 } from "./reddit-json-client";
+import { REDDIT_KNOBS } from "@/backend/config/knobs";
 import type {
   IngestionTarget,
   SignalCandidate,
 } from "@/backend/ingestion/types";
-
-const PER_SUBREDDIT_LIMIT = 50;
 
 export async function fetchRedditCandidates(
   target: IngestionTarget,
@@ -18,7 +17,7 @@ export async function fetchRedditCandidates(
     const allCandidates: Array<SignalCandidate> = [];
     for (const sub of subreddits) {
       const candidates = await fetchRedditSubredditNew(sub, {
-        limit: PER_SUBREDDIT_LIMIT,
+        limit: REDDIT_KNOBS.perSubredditLimit,
       });
       allCandidates.push(...candidates);
     }
@@ -30,7 +29,7 @@ export async function fetchRedditCandidates(
 
   return fetchRedditSearch(query, {
     sort: "new",
-    limit: 100,
+    limit: REDDIT_KNOBS.defaultRequestLimit,
   });
 }
 

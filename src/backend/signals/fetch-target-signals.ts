@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { SignalSummary } from "@/types/global.types";
+import { SIGNALS_KNOBS } from "@/backend/config/knobs";
 import { createClient } from "@/lib/supabase/server";
 
 type FetchSignalsInput = {
@@ -19,7 +20,7 @@ type FetchTargetSignalsPage = {
 };
 
 const DEFAULT_PAGE = 1;
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = SIGNALS_KNOBS.targetSignalsPageSize;
 
 const parseOptionalNumber = (value: unknown): number | undefined => {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -92,7 +93,7 @@ export const fetchTargetSignals = createServerFn({ method: "GET" })
       )
       .eq("target_id", data.targetId)
       .eq("user_id", userData.user.id)
-      .gte("score", 70)
+      .gte("score", SIGNALS_KNOBS.minScoreToShowInUi)
       .order("date_posted", { ascending: false })
       .range(from, to);
 
