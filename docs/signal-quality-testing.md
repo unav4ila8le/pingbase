@@ -19,12 +19,13 @@ Use this plan to validate the precision-first, value-first scoring pipeline.
    - `prefilterRejectReasons`
 
 3. In the dashboard, review surfaced signals. Current strict show predicate requires:
-   - `score >= 75`
+   - `score >= 85`
    - `specific_ask = true`
    - `fit_grade = 'strong'`
    - `promo_risk = 'low'`
    - `validator_decision = 'approve'`
-   - `validator_confidence >= 70`
+   - `validator_confidence >= 90`
+   - validator says product mention is natural (`brandMentionNatural=true`), otherwise approval is auto-downgraded to reject.
 
 4. Quick checks:
    - Are there **daily/weekly discussion threads**? (Should be fewer or gone.)
@@ -72,7 +73,7 @@ After a run, scan the signal list for these anti-patterns. Each should score **<
 
 ## Positive Signal Sanity Check
 
-Signals scoring **75+** should typically look like:
+Signals scoring **85+** should typically look like:
 
 - Poster has a **specific question** (e.g. "Which 401k funds should I pick?", "How do I track my portfolio?")
 - Poster describes a **concrete problem** the target could address
@@ -89,7 +90,7 @@ If you have a previous run’s data (before the prompt changes):
 1. Run ingestion again with the same target and subreddits.
 2. Compare:
    - **Inserted count**: Expect fewer signals (stricter scoring).
-   - **Score distribution**: Clearer separation between 40–50 (audit-only) and 75+ (actionable).
+   - **Score distribution**: Clearer separation between 40–50 (audit-only) and 85+ (actionable).
    - **Sample review**: Spot-check 10 random signals from old vs new run. New run should have fewer anti-patterns.
 
 ---
@@ -99,7 +100,7 @@ If you have a previous run’s data (before the prompt changes):
 - Current thresholds:
   - Store: `score >= 40`
   - Validate: `score >= 65`
-  - Show: `score >= 75` + strict predicate
+  - Show: `score >= 85` + strict predicate
 - If you still see noise: raise show threshold or validator confidence minimum.
 - If you lose too many good signals: Review the prompt—it may be overcorrecting.
 

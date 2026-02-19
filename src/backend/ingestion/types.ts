@@ -54,6 +54,7 @@ export type ValidateSignalResult = {
   confidence: number;
   reason: string;
   failureReason: string | null;
+  brandMentionNatural: boolean;
 };
 
 export type ScoredSignalCandidate = SignalCandidate & {

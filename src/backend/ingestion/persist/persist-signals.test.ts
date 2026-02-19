@@ -84,6 +84,7 @@ function makeSignal(
       confidence: 84,
       reason: "Good value-first response possible.",
       failureReason: null,
+      brandMentionNatural: true,
     },
     ...overrides,
   };

@@ -90,7 +90,7 @@ function makeStage1(
   overrides: Partial<ScoreSignalResult> = {},
 ): ScoreSignalResult {
   return {
-    score: 80,
+    score: 90,
     reason: "Specific ask and strong fit.",
     specificAsk: true,
     fitGrade: "strong",
@@ -107,9 +107,10 @@ function makeValidator(
 ): ValidateSignalResult {
   return {
     decision: "approve",
-    confidence: 88,
+    confidence: 92,
     reason: "Clear value-first reply possible.",
     failureReason: null,
+    brandMentionNatural: true,
     ...overrides,
   };
 }

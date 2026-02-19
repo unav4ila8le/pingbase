@@ -229,7 +229,8 @@
       },
       "validator": {
         "decision": "approve",
-        "confidence": 88
+        "confidence": 93,
+        "brandMentionNatural": true
       }
     },
     {
@@ -254,7 +255,8 @@
       },
       "validator": {
         "decision": "approve",
-        "confidence": 91
+        "confidence": 91,
+        "brandMentionNatural": true
       }
     },
     {
@@ -305,6 +307,760 @@
       "validator": {
         "decision": "approve",
         "confidence": 90
+      }
+    },
+    {
+      "id": "run29-1r8a7z8",
+      "expected": "hide",
+      "rationale": "generic_finance_advice_not_promotable",
+      "candidate": {
+        "externalId": "t3_1r8a7z8",
+        "title": "Roth 401k vs Traditional 401k",
+        "contentExcerpt": "Which contribution mix better supports retiring at 40?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 450
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 88
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8lbdi",
+      "expected": "hide",
+      "rationale": "generic_finance_advice_not_promotable",
+      "candidate": {
+        "externalId": "t3_1r8lbdi",
+        "title": "Another year or all good to go?",
+        "contentExcerpt": "FIRE timing question with detailed balances and spending.",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 520
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r88wo1",
+      "expected": "hide",
+      "rationale": "generic_finance_advice_not_promotable",
+      "candidate": {
+        "externalId": "t3_1r88wo1",
+        "title": "Is it possible I can retire at 55 with my current setup?",
+        "contentExcerpt": "Retirement feasibility with balances, contributions, and spending.",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 420
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r7t2dr",
+      "expected": "hide",
+      "rationale": "allocation_advice_only",
+      "candidate": {
+        "externalId": "t3_1r7t2dr",
+        "title": "Retirement fund guidance",
+        "contentExcerpt": "Is 58/28/14 allocation reasonable for a Roth 401k?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 360
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r870z7",
+      "expected": "hide",
+      "rationale": "community_discussion_not_tool_intent",
+      "candidate": {
+        "externalId": "t3_1r870z7",
+        "title": "Patrimonio e vari",
+        "contentExcerpt": "Should TFR in pension fund be counted in net worth?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 170
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r85h9k",
+      "expected": "hide",
+      "rationale": "retirement_math_without_tool_request",
+      "candidate": {
+        "externalId": "t3_1r85h9k",
+        "title": "Started 2 months ago. SCHD/FDVV/DGRO",
+        "contentExcerpt": "Can I retire by 50 with current contributions and ETF mix?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 190
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8entq",
+      "expected": "hide",
+      "rationale": "retirement_readiness_general",
+      "candidate": {
+        "externalId": "t3_1r8entq",
+        "title": "60 am I ready?",
+        "contentExcerpt": "Is this retirement-ready and what should I change?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 280
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r815h9",
+      "expected": "hide",
+      "rationale": "discussion_quality_scores_not_tool_request",
+      "candidate": {
+        "externalId": "t3_1r815h9",
+        "title": "Anyone else obsessed with dividend safety ratings?",
+        "contentExcerpt": "Do you trust safety scores and is 1.25% yield too conservative?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 380
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 88
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8l6sr",
+      "expected": "hide",
+      "rationale": "allocation_advice_only",
+      "candidate": {
+        "externalId": "t3_1r8l6sr",
+        "title": "Should I be adding in FTIHX and some Bonds?",
+        "contentExcerpt": "Should I add international and bonds given my account breakdown?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 210
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r842h7",
+      "expected": "hide",
+      "rationale": "life_decision_finance_context_not_tool_request",
+      "candidate": {
+        "externalId": "t3_1r842h7",
+        "title": "Numbers/reality check",
+        "contentExcerpt": "Can I justify pausing work with current family net worth?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 500
+      },
+      "stage1": {
+        "score": 88,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 86
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r86iy7",
+      "expected": "hide",
+      "rationale": "generic_diversification_advice",
+      "candidate": {
+        "externalId": "t3_1r86iy7",
+        "title": "Diversificare",
+        "contentExcerpt": "Should I add EM or gold (6-8%) to diversify?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": "image",
+        "rawTextLength": 190
+      },
+      "stage1": {
+        "score": 88,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 86,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8mr0n",
+      "expected": "hide",
+      "rationale": "new_investor_generic_guidance",
+      "candidate": {
+        "externalId": "t3_1r8mr0n",
+        "title": "17 y/o Building a Growth Portfolio – Need Advice",
+        "contentExcerpt": "Should I focus on growth and use ETFs or stocks?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 150
+      },
+      "stage1": {
+        "score": 88,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 88
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 87,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8bnnx",
+      "expected": "hide",
+      "rationale": "allocation_withdrawal_advice_only",
+      "candidate": {
+        "externalId": "t3_1r8bnnx",
+        "title": "Retiring at 41 with 80% equities/15% bonds/5% cash",
+        "contentExcerpt": "Is this allocation okay with a 4% rule retirement plan?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 260
+      },
+      "stage1": {
+        "score": 88,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r7xrp1",
+      "expected": "hide",
+      "rationale": "complex_fire_planning_general_advice",
+      "candidate": {
+        "externalId": "t3_1r7xrp1",
+        "title": "FIRE with large stake in one private family company",
+        "contentExcerpt": "How should I think about my FIRE number with illiquid equity?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 520
+      },
+      "stage1": {
+        "score": 88,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8m6ft",
+      "expected": "hide",
+      "rationale": "allocation_advice_only",
+      "candidate": {
+        "externalId": "t3_1r8m6ft",
+        "title": "Brokerage and Roth Allocation",
+        "contentExcerpt": "Please review my proposed allocation for brokerage and Roth IRA.",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 230
+      },
+      "stage1": {
+        "score": 88,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r84gcx",
+      "expected": "hide",
+      "rationale": "market_outlook_discussion",
+      "candidate": {
+        "externalId": "t3_1r84gcx",
+        "title": "How are you adjusting investment strategies amid 2026 market uncertainties",
+        "contentExcerpt": "Should I add bonds or alternatives for a potential lost decade?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 260
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 92,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r80k0p",
+      "expected": "hide",
+      "rationale": "simple_allocation_poll",
+      "candidate": {
+        "externalId": "t3_1r80k0p",
+        "title": "VOO (50) + AVUV (10) + AVDE (40)",
+        "contentExcerpt": "How would you allocate these three ETFs?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 130
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8nf9m",
+      "expected": "hide",
+      "rationale": "high_risk_portfolio_discussion",
+      "candidate": {
+        "externalId": "t3_1r8nf9m",
+        "title": "Portafogli rischioso",
+        "contentExcerpt": "How to make my portfolio much riskier (leverage, stocks, crypto)?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 360
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 88,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r7sgwu",
+      "expected": "hide",
+      "rationale": "broad_multi_question_finance_thread",
+      "candidate": {
+        "externalId": "t3_1r7sgwu",
+        "title": "Portfolio Composition",
+        "contentExcerpt": "Comprehensive retirement/tax/portfolio planning questions.",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 520
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 80
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 80,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8mqdr",
+      "expected": "hide",
+      "rationale": "portfolio_feedback_discussion",
+      "candidate": {
+        "externalId": "t3_1r8mqdr",
+        "title": "Portfolio Feedback? COST Feels Out Of Place",
+        "contentExcerpt": "Any feedback on my multi-tier portfolio and where COST belongs?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 430
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 80
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 86,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r7szgu",
+      "expected": "hide",
+      "rationale": "life_choice_finance_tradeoff",
+      "candidate": {
+        "externalId": "t3_1r7szgu",
+        "title": "Leaving my 200k a year job in VHCOL to return to LCOL near family?",
+        "contentExcerpt": "Should we move now or wait two years given income drop?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 420
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 88,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r82mgw",
+      "expected": "hide",
+      "rationale": "freelance_cashflow_method_discussion",
+      "candidate": {
+        "externalId": "t3_1r82mgw",
+        "title": "Freelance forfettari: come sapete quanto potete spendere ogni mese?",
+        "contentExcerpt": "How do you track real net spend and tax threshold each month?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 230
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 86,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r88qu3",
+      "expected": "hide",
+      "rationale": "401k_allocation_general",
+      "candidate": {
+        "externalId": "t3_1r88qu3",
+        "title": "401k Allocation Opinion",
+        "contentExcerpt": "Is 100% FXAIX fine or should I diversify?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 240
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r866fx",
+      "expected": "hide",
+      "rationale": "max_vs_taxable_fire_tradeoff_general",
+      "candidate": {
+        "externalId": "t3_1r866fx",
+        "title": "Max 401k or 15% for FIRE?",
+        "contentExcerpt": "Should I max 401k or invest difference in taxable?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 300
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 80
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 88,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r8gewk",
+      "expected": "hide",
+      "rationale": "retirement_feasibility_general",
+      "candidate": {
+        "externalId": "t3_1r8gewk",
+        "title": "Retirement With Pension",
+        "contentExcerpt": "Can I retire at 43 with pension plus 457 balance?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 190
+      },
+      "stage1": {
+        "score": 82,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 80
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 89,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r88u2n",
+      "expected": "hide",
+      "rationale": "retirement_readiness_general",
+      "candidate": {
+        "externalId": "t3_1r88u2n",
+        "title": "I think I can retire, but am too nervous to pull the trigger.",
+        "contentExcerpt": "Does this retirement plan check out with current numbers?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 300
+      },
+      "stage1": {
+        "score": 80,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 88,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r82pq1",
+      "expected": "hide",
+      "rationale": "portfolio_balancing_general",
+      "candidate": {
+        "externalId": "t3_1r82pq1",
+        "title": "Bilanciare e sistemare il portafoglio (primi passi)",
+        "contentExcerpt": "Should I add VWCE or MSCI World to rebalance?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": "image",
+        "rawTextLength": 180
+      },
+      "stage1": {
+        "score": 80,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 80
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 86,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r7rtei",
+      "expected": "hide",
+      "rationale": "beginner_investing_general",
+      "candidate": {
+        "externalId": "t3_1r7rtei",
+        "title": "20yr old with 20k in tfsa looking for advice",
+        "contentExcerpt": "General long-term advice; maybe add BTC.",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 120
+      },
+      "stage1": {
+        "score": 80,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 80
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 85,
+        "brandMentionNatural": false
+      }
+    },
+    {
+      "id": "run29-1r7tvcj",
+      "expected": "hide",
+      "rationale": "allocation_tilt_discussion",
+      "candidate": {
+        "externalId": "t3_1r7tvcj",
+        "title": "Where to invest (already investing in S&P500)",
+        "contentExcerpt": "How much GOOG tilt should I add to S&P500?",
+        "author": "reddit-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 340
+      },
+      "stage1": {
+        "score": 80,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 85
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 86,
+        "brandMentionNatural": false
       }
     }
   ]

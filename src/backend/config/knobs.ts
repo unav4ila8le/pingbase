@@ -17,8 +17,8 @@ export const REDDIT_KNOBS = {
 } as const;
 
 export const SIGNALS_KNOBS = {
-  minScoreToShowInUi: 75,
-  validatorMinConfidenceToShow: 70,
+  minScoreToShowInUi: 85,
+  validatorMinConfidenceToShow: 90,
   targetSignalsPageSize: 20,
 } as const;
 

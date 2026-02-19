@@ -7,6 +7,7 @@ import { INGESTION_KNOBS } from "@/backend/config/knobs";
 import { fetchRedditCandidates } from "@/backend/ingestion/reddit/fetch-reddit-signals";
 import { prefilterRedditCandidates } from "@/backend/ingestion/reddit/prefilter-reddit-candidates";
 import { applyScoreGuards } from "@/backend/ingestion/score/apply-score-guards";
+import { applyValidatorGuards } from "@/backend/ingestion/score/apply-validator-guards";
 import { scoreSignalCandidate } from "@/backend/ingestion/score/score-signal";
 import { validateSignalCandidate } from "@/backend/ingestion/score/validate-signal";
 import { isStrictShowEligible } from "@/backend/signals/strict-signal-filter";
@@ -84,7 +85,9 @@ export async function ingestTarget(
 
         if (score >= INGESTION_KNOBS.minScoreForValidation) {
           validatedCount += 1;
-          validator = await validateSignalCandidate(target, candidate, stage1);
+          validator = applyValidatorGuards(
+            await validateSignalCandidate(target, candidate, stage1),
+          );
 
           if (validator.decision === "reject") {
             validatorRejectedCount += 1;

@@ -13,6 +13,7 @@ import type {
 import { INGESTION_KNOBS } from "@/backend/config/knobs";
 import { getPrefilterRejectReason } from "@/backend/ingestion/reddit/prefilter-reddit-candidates";
 import { applyScoreGuards } from "@/backend/ingestion/score/apply-score-guards";
+import { applyValidatorGuards } from "@/backend/ingestion/score/apply-validator-guards";
 import { isStrictShowEligible } from "@/backend/signals/strict-signal-filter";
 
 const VALIDATOR_REJECT_MAX_SCORE = 49;
@@ -32,6 +33,7 @@ type GoldsetStage1 = {
 type GoldsetValidator = {
   decision: ValidatorDecision;
   confidence: number;
+  brandMentionNatural?: boolean;
 };
 
 type GoldsetCandidate = {
@@ -133,11 +135,19 @@ function evaluateCase(
   }
 
   const guardedStage1 = applyScoreGuards(toStage1(scenario.stage1));
+  const guardedValidator = applyValidatorGuards({
+    decision: scenario.validator.decision,
+    confidence: scenario.validator.confidence,
+    reason: "fixture",
+    failureReason:
+      scenario.validator.decision === "reject" ? "fixture_reject" : null,
+    brandMentionNatural: scenario.validator.brandMentionNatural ?? true,
+  });
   let finalScore = guardedStage1.score;
 
   if (
     finalScore >= INGESTION_KNOBS.minScoreForValidation &&
-    scenario.validator.decision === "reject"
+    guardedValidator.decision === "reject"
   ) {
     finalScore = Math.min(finalScore, VALIDATOR_REJECT_MAX_SCORE);
   }
@@ -147,8 +157,8 @@ function evaluateCase(
     specificAsk: guardedStage1.specificAsk,
     fitGrade: guardedStage1.fitGrade,
     promoRisk: guardedStage1.promoRisk,
-    validatorDecision: scenario.validator.decision,
-    validatorConfidence: scenario.validator.confidence,
+    validatorDecision: guardedValidator.decision,
+    validatorConfidence: guardedValidator.confidence,
   });
 
   return {

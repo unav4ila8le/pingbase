@@ -14,6 +14,7 @@ const validatorSchema = z.object({
   confidence: z.number().int().min(0).max(100),
   reason: z.string().min(1),
   failureReason: z.string().trim().nullable(),
+  brandMentionNatural: z.boolean(),
 });
 
 function buildValidatorPrompt(
@@ -48,7 +49,12 @@ function buildValidatorPrompt(
     "",
     "Task: validate this candidate with a strict precision-first bar.",
     "Reject when helpful advice would likely require overt promotion, fit is not truly strong, or ask is not specific enough.",
+    "Reject generic finance threads where the user mainly wants broad community opinions.",
     "Approve only when this is clearly a high-quality, value-first engagement opportunity.",
+    "",
+    "Field definitions:",
+    "- brandMentionNatural: true only when referencing the target would feel organic and invited by the user's ask.",
+    "- failureReason: short snake_case reason when decision is reject; null when approved.",
     "Return only structured output.",
   ].join("\n");
 }
@@ -69,7 +75,12 @@ export async function validateSignalCandidate(
     }),
     system: `You are a strict validator in a precision-first signal pipeline.
 Your job is to reject borderline or weakly actionable candidates.
-Approve only clearly actionable, value-first opportunities where advice can stand without a hard pitch.`,
+Approve only clearly actionable, value-first opportunities where advice can stand without a hard pitch.
+
+IMPORTANT:
+- "Useful post" does not always mean "promotable post".
+- Reject posts that can be answered well with generic advice and where naming a product would feel bolted on.
+- Approve only when the ask naturally invites a tooling/workflow answer, or explicit tool comparison request.`,
     prompt: buildValidatorPrompt(target, signal, stage1),
   });
 

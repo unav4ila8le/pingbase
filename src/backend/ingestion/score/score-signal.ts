@@ -52,7 +52,7 @@ const buildPrompt = (target: IngestionTarget, signal: SignalCandidate) => {
     "",
     "Field definitions:",
     "- specificAsk: true only if there is a concrete ask/problem.",
-    "- fitGrade: strong | partial | none.",
+    "- fitGrade: strong only when the ask naturally maps to the target's tooling/workflow. Use partial for generic finance advice where a product mention would be optional.",
     "- promoRisk: low when advice can stand on its own; high when the reply would likely read as promotional.",
     "- confidence: confidence in this judgment (0-100).",
     "- rejectionReason: short reason when not clearly actionable; otherwise null.",
@@ -85,6 +85,8 @@ export async function scoreSignalCandidate(
 SCORING CRITERION: ACTIONABILITY
 - Actionable means: specific ask + strong direct fit + low promotional risk.
 - Non-actionable means: generic discussion, weak fit, no concrete ask, or likely self-promo.
+
+For portfolio tools, generic investing threads (asset allocation, ETF picks, FIRE math, retirement timing) are usually PARTIAL fit unless the post explicitly asks for tooling/workflow help, tracker/app recommendations, scenario modeling, or spreadsheet replacement.
 
 ALWAYS SCORE LOW (<50) for:
 - Daily/weekly discussion threads, sticky posts, "megathreads"
