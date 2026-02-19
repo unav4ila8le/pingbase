@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { SignalSummary } from "@/types/global.types";
 import { SIGNALS_KNOBS } from "@/backend/config/knobs";
+import { applyStrictSignalFilters } from "@/backend/signals/strict-signal-filter";
 import { createClient } from "@/lib/supabase/server";
 
 type FetchSignalsInput = {
@@ -85,15 +86,18 @@ export const fetchTargetSignals = createServerFn({ method: "GET" })
       };
     }
 
-    const { data: signals, error, count } = await supabase
+    const baseQuery = supabase
       .from("signals")
       .select(
         "id, platform, type, community, title, content_excerpt, score, reason, url, status, date_posted",
         { count: "exact" },
       )
       .eq("target_id", data.targetId)
-      .eq("user_id", userData.user.id)
-      .gte("score", SIGNALS_KNOBS.minScoreToShowInUi)
+      .eq("user_id", userData.user.id);
+
+    const { data: signals, error, count } = await applyStrictSignalFilters(
+      baseQuery,
+    )
       .order("date_posted", { ascending: false })
       .range(from, to);
 

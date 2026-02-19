@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { SIGNALS_KNOBS } from "@/backend/config/knobs";
+import { applyStrictSignalFilters } from "@/backend/signals/strict-signal-filter";
 import { createClient } from "@/lib/supabase/server";
 
 export type SignalCounts = Record<string, { new: number; total: number }>;
@@ -35,12 +35,13 @@ export const fetchTargetSignalCounts = createServerFn({ method: "GET" })
       return {};
     }
 
-    const { data: signals, error } = await supabase
+    const baseQuery = supabase
       .from("signals")
       .select("target_id, status")
       .in("target_id", data.targetIds)
-      .eq("user_id", userData.user.id)
-      .gte("score", SIGNALS_KNOBS.minScoreToShowInUi);
+      .eq("user_id", userData.user.id);
+
+    const { data: signals, error } = await applyStrictSignalFilters(baseQuery);
 
     if (error) {
       throw new Error(error.message);

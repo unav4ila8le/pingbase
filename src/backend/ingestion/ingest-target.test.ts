@@ -132,7 +132,18 @@ describe("ingestTarget", () => {
 
     const result = await ingestTarget(target);
 
-    expect(result).toEqual({ inserted: 1 });
+    expect(result).toMatchObject({
+      inserted: 1,
+      fetchedCount: 1,
+      freshCount: 1,
+      prefilterAcceptedCount: 1,
+      prefilterRejectedCount: 0,
+      scoredCount: 1,
+      validatedCount: 1,
+      validatorRejectedCount: 0,
+      showEligibleCount: 1,
+      prefilterRejectReasons: {},
+    });
     expect(fetchRedditCandidatesMock).toHaveBeenCalledWith(target);
     expect(prefilterRedditCandidatesMock).toHaveBeenCalledTimes(1);
     expect(scoreSignalCandidateMock).toHaveBeenCalledTimes(1);
@@ -161,7 +172,7 @@ describe("ingestTarget", () => {
     persistSignalsMock.mockResolvedValue({ inserted: 0 });
     updateTargetLastScannedAtMock.mockResolvedValue(undefined);
 
-    await ingestTarget(target);
+    const result = await ingestTarget(target);
 
     const persistedSignals = persistSignalsMock.mock.calls[0]?.[1] as Array<{
       score: number;
@@ -169,5 +180,7 @@ describe("ingestTarget", () => {
     }>;
     expect(persistedSignals[0]?.score).toBe(49);
     expect(persistedSignals[0]?.reason).toContain("Validator:");
+    expect(result.validatorRejectedCount).toBe(1);
+    expect(result.showEligibleCount).toBe(0);
   });
 });
