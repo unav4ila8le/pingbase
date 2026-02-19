@@ -4,12 +4,19 @@ import { openai } from "@ai-sdk/openai";
 
 import type {
   IngestionTarget,
+  ScoreSignalResult,
   SignalCandidate,
 } from "@/backend/ingestion/types";
 
 const scoreSchema = z.object({
   score: z.number().int().min(0).max(100),
   reason: z.string().min(1),
+  specificAsk: z.boolean(),
+  fitGrade: z.enum(["none", "partial", "strong"]),
+  promoRisk: z.enum(["low", "medium", "high"]),
+  confidence: z.number().int().min(0).max(100),
+  rejectionReason: z.string().trim().nullable(),
+  evidenceQuote: z.string().trim().nullable(),
 });
 
 const buildPrompt = (target: IngestionTarget, signal: SignalCandidate) => {
@@ -28,23 +35,43 @@ const buildPrompt = (target: IngestionTarget, signal: SignalCandidate) => {
     "",
     `Content type: ${signal.type}`,
     `Community: ${signal.community}`,
+    `Author: ${signal.author ?? "N/A"}`,
+    `Link flair: ${signal.linkFlairText ?? "N/A"}`,
+    `Post hint: ${signal.postHint ?? "N/A"}`,
+    `Domain: ${signal.domain ?? "N/A"}`,
+    `Stickied: ${signal.stickied}`,
+    `Locked: ${signal.locked}`,
     `Title: ${signal.title ?? "N/A"}`,
     `Excerpt: ${signal.contentExcerpt}`,
     "",
-    "Task: Score ACTIONABILITY 0-100. A signal is actionable only when:",
-    "1. The poster has a SPECIFIC question or expressed need (not a generic discussion).",
-    "2. The target could DIRECTLY answer or solve that need.",
-    "3. A founder replying here would read as helpful advice, not a promotional plug.",
+    "Task: Score ACTIONABILITY 0-100.",
+    "A signal is actionable only when ALL are true:",
+    "1) The poster has a concrete, specific question or need.",
+    "2) The target is a strong direct fit for that need.",
+    "3) A value-first reply is possible without requiring a hard product pitch.",
     "",
-    "Score high (75+) only when all three are true. Score low (<50) when the post lacks a specific ask, is a catch-all thread, or would make the target feel like spam.",
-    "Explain in 1-2 sentences. Return only the structured output.",
+    "Field definitions:",
+    "- specificAsk: true only if there is a concrete ask/problem.",
+    "- fitGrade: strong | partial | none.",
+    "- promoRisk: low when advice can stand on its own; high when the reply would likely read as promotional.",
+    "- confidence: confidence in this judgment (0-100).",
+    "- rejectionReason: short reason when not clearly actionable; otherwise null.",
+    "- evidenceQuote: short quote from the post that supports your decision; null if none.",
+    "",
+    "Scoring rubric:",
+    "- 75-100: specific ask + strong fit + low promo risk.",
+    "- 50-74: some usefulness but weak fit or medium promo risk.",
+    "- 0-49: non-actionable, generic, weak fit, or likely promotional/spammy.",
+    "",
+    "Be strict. Prefer lower scores for ambiguous cases.",
+    "Return only the structured output.",
   ].join("\n");
 };
 
 export async function scoreSignalCandidate(
   target: IngestionTarget,
   signal: SignalCandidate,
-) {
+): Promise<ScoreSignalResult> {
   const modelName = process.env.OPENAI_MODEL ?? "gpt-5-mini";
   const { output } = await generateText({
     model: openai(modelName),
@@ -56,8 +83,8 @@ export async function scoreSignalCandidate(
     system: `You are a relevance scorer for a tool that helps founders/brands find posts where they can genuinely engage (share their product, offer advice). Your job is to surface ACTIONABLE signals only.
 
 SCORING CRITERION: ACTIONABILITY
-- Actionable: The poster has a specific question or problem; the target (product/brand) could directly help; a reply would read as helpful, not promotional.
-- Not actionable: Same topic but no concrete ask; generic discussion; catch-all threads; news/meta; posts where the target would feel like spam.
+- Actionable means: specific ask + strong direct fit + low promotional risk.
+- Non-actionable means: generic discussion, weak fit, no concrete ask, or likely self-promo.
 
 ALWAYS SCORE LOW (<50) for:
 - Daily/weekly discussion threads, sticky posts, "megathreads"
@@ -66,7 +93,9 @@ ALWAYS SCORE LOW (<50) for:
 - AutoModerator or bot posts
 - Posts where the target tangentially fits but wouldn't solve the poster's actual question
 
-Use the target's name, description, and keywords to infer what problem it solves. Be strict: when in doubt, score lower. High scores (75+) require a clear, specific need the target addresses.`,
+Use the target's name, description, keywords, and exclusions to infer what problem it solves.
+Value-first rule: if a helpful reply would require mentioning the product to be useful, classify promoRisk as high and score lower.
+Be strict: when in doubt, score lower.`,
     prompt: buildPrompt(target, signal),
   });
 

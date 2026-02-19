@@ -5,9 +5,14 @@ import type {
 } from "@/backend/ingestion/types";
 import { INGESTION_KNOBS } from "@/backend/config/knobs";
 import { fetchRedditCandidates } from "@/backend/ingestion/reddit/fetch-reddit-signals";
+import { prefilterRedditCandidates } from "@/backend/ingestion/reddit/prefilter-reddit-candidates";
+import { applyScoreGuards } from "@/backend/ingestion/score/apply-score-guards";
 import { scoreSignalCandidate } from "@/backend/ingestion/score/score-signal";
+import { validateSignalCandidate } from "@/backend/ingestion/score/validate-signal";
 import { persistSignals } from "@/backend/ingestion/persist/persist-signals";
 import { updateTargetLastScannedAt } from "@/backend/targets/update-target-last-scanned-at";
+
+const VALIDATOR_REJECT_MAX_SCORE = 49;
 
 function getCutoffTimestamp(target: IngestionTarget): number {
   if (target.last_scanned_at) {
@@ -32,21 +37,42 @@ export async function ingestTarget(target: IngestionTarget) {
   const freshCandidates = candidates.filter((c) =>
     isNewerThanCutoff(c, cutoffMs),
   );
+  const prefilterResult = prefilterRedditCandidates(target, freshCandidates);
 
   const scored: Array<ScoredSignalCandidate> = [];
   for (
     let i = 0;
-    i < freshCandidates.length;
+    i < prefilterResult.accepted.length;
     i += INGESTION_KNOBS.llmConcurrency
   ) {
-    const chunk = freshCandidates.slice(i, i + INGESTION_KNOBS.llmConcurrency);
+    const chunk = prefilterResult.accepted.slice(
+      i,
+      i + INGESTION_KNOBS.llmConcurrency,
+    );
     const results = await Promise.all(
       chunk.map(async (candidate) => {
-        const scoreResult = await scoreSignalCandidate(target, candidate);
+        const stage1 = applyScoreGuards(
+          await scoreSignalCandidate(target, candidate),
+        );
+        let score = stage1.score;
+        let reason = stage1.reason;
+        let validator: ScoredSignalCandidate["validator"] = null;
+
+        if (score >= INGESTION_KNOBS.minScoreForValidation) {
+          validator = await validateSignalCandidate(target, candidate, stage1);
+
+          if (validator.decision === "reject") {
+            score = Math.min(score, VALIDATOR_REJECT_MAX_SCORE);
+            reason = `${reason} Validator: ${validator.reason}`;
+          }
+        }
+
         return {
           ...candidate,
-          score: scoreResult.score,
-          reason: scoreResult.reason,
+          score,
+          reason,
+          stage1,
+          validator,
         } satisfies ScoredSignalCandidate;
       }),
     );

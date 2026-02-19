@@ -23,11 +23,19 @@ type RedditThing = {
     id: string;
     name?: string;
     subreddit?: string;
+    author?: string;
     title?: string;
     selftext?: string;
     body?: string;
     created_utc: number;
     permalink?: string;
+    stickied?: boolean;
+    locked?: boolean;
+    distinguished?: string | null;
+    link_flair_text?: string | null;
+    post_hint?: string;
+    is_self?: boolean;
+    domain?: string;
     [key: string]: unknown;
   };
 };
@@ -81,6 +89,7 @@ function toSignalCandidate(thing: RedditThing): SignalCandidate | null {
   const title = type === "post" ? (data.title ?? null) : null;
   const body = type === "post" ? (data.selftext ?? "") : (data.body ?? "");
   const contentSource = body || (title ?? "");
+  const rawTextLength = contentSource.trim().length;
   const contentExcerpt =
     truncate(contentSource, REDDIT_KNOBS.contentExcerptMax) || "(no content)";
 
@@ -97,6 +106,17 @@ function toSignalCandidate(thing: RedditThing): SignalCandidate | null {
     title,
     contentExcerpt,
     datePosted,
+    author: typeof data.author === "string" ? data.author : null,
+    stickied: Boolean(data.stickied),
+    locked: Boolean(data.locked),
+    distinguished:
+      typeof data.distinguished === "string" ? data.distinguished : null,
+    linkFlairText:
+      typeof data.link_flair_text === "string" ? data.link_flair_text : null,
+    postHint: typeof data.post_hint === "string" ? data.post_hint : null,
+    isSelf: Boolean(data.is_self),
+    domain: typeof data.domain === "string" ? data.domain : null,
+    rawTextLength,
     rawPayload: thing,
   };
 }

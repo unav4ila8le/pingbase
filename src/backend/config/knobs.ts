@@ -5,7 +5,8 @@
 export const INGESTION_KNOBS = {
   initialLookbackHours: 24,
   llmConcurrency: 10,
-  minScoreToStore: 50,
+  minScoreToStore: 40,
+  minScoreForValidation: 65,
 } as const;
 
 export const REDDIT_KNOBS = {
