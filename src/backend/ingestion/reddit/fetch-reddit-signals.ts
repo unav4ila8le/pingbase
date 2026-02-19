@@ -2,11 +2,11 @@ import {
   fetchRedditSearch,
   fetchRedditSubredditNew,
 } from "./reddit-json-client";
-import { REDDIT_KNOBS } from "@/backend/config/knobs";
 import type {
   IngestionTarget,
   SignalCandidate,
 } from "@/backend/ingestion/types";
+import { REDDIT_KNOBS } from "@/backend/config/knobs";
 
 export async function fetchRedditCandidates(
   target: IngestionTarget,

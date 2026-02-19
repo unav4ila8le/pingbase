@@ -2,8 +2,8 @@ import type {
   IngestionTarget,
   ScoredSignalCandidate,
 } from "@/backend/ingestion/types";
-import { INGESTION_KNOBS } from "@/backend/config/knobs";
 import type { Json } from "@/types/database.types";
+import { INGESTION_KNOBS } from "@/backend/config/knobs";
 import { createServiceClient } from "@/lib/supabase/service";
 
 export async function persistSignals(
