@@ -53,6 +53,7 @@
 
 - Periodic scans run via app-level cron (not DB cron).
 - Retention cleanup should be a scheduled job alongside ingestion.
+- Cron endpoints (`/api/cron/ingest`, `/api/cron/retention`) are public URLs but protected by secret-based auth: require `CRON_SECRET` env var and `Authorization: Bearer <CRON_SECRET>` header; return 401 otherwise.
 
 ## TypeScript & Code Style
 
