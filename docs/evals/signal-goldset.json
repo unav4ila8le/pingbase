@@ -1,0 +1,311 @@
+{
+  "version": "v2",
+  "target": {
+    "name": "Foliofox",
+    "description": "AI-powered portfolio intelligence for personal finance enthusiasts.",
+    "keywords": ["portfolio tracker", "net worth", "retirement planning"],
+    "exclusions": ["giveaway", "job posting"]
+  },
+  "cases": [
+    {
+      "id": "daily-thread",
+      "expected": "hide",
+      "rationale": "daily_megathread",
+      "candidate": {
+        "externalId": "t3_daily",
+        "title": "Daily Discussion Thread - Monday",
+        "contentExcerpt": "Share anything here.",
+        "author": "mod-user",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 25
+      },
+      "stage1": {
+        "score": 80,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 70
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90
+      }
+    },
+    {
+      "id": "automoderator-post",
+      "expected": "hide",
+      "rationale": "automoderator",
+      "candidate": {
+        "externalId": "t3_mod",
+        "title": "Please read the rules",
+        "contentExcerpt": "AutoModerator housekeeping.",
+        "author": "AutoModerator",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 34
+      },
+      "stage1": {
+        "score": 70,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 70
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90
+      }
+    },
+    {
+      "id": "low-context-image",
+      "expected": "hide",
+      "rationale": "low_context_link_post",
+      "candidate": {
+        "externalId": "t3_img",
+        "title": "My portfolio screenshot",
+        "contentExcerpt": "Thoughts?",
+        "author": "user-a",
+        "stickied": false,
+        "postHint": "image",
+        "rawTextLength": 9
+      },
+      "stage1": {
+        "score": 79,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 72
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 86
+      }
+    },
+    {
+      "id": "generic-thoughts",
+      "expected": "hide",
+      "rationale": "no_specific_ask",
+      "candidate": {
+        "externalId": "t3_generic",
+        "title": "Thoughts on investing in 2026?",
+        "contentExcerpt": "Curious what everyone thinks about current markets.",
+        "author": "user-b",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 55
+      },
+      "stage1": {
+        "score": 78,
+        "specificAsk": false,
+        "fitGrade": "partial",
+        "promoRisk": "medium",
+        "confidence": 83
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 80
+      }
+    },
+    {
+      "id": "tangential-fit",
+      "expected": "hide",
+      "rationale": "fit_not_strong",
+      "candidate": {
+        "externalId": "t3_tangent",
+        "title": "Best legal structure for my startup?",
+        "contentExcerpt": "Should I pick LLC or C-corp?",
+        "author": "user-c",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 36
+      },
+      "stage1": {
+        "score": 88,
+        "specificAsk": true,
+        "fitGrade": "partial",
+        "promoRisk": "medium",
+        "confidence": 84
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 85
+      }
+    },
+    {
+      "id": "high-promo-risk",
+      "expected": "hide",
+      "rationale": "promo_risk_high",
+      "candidate": {
+        "externalId": "t3_promo",
+        "title": "Any apps to track portfolio?",
+        "contentExcerpt": "Just list your product links please.",
+        "author": "user-d",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 36
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "high",
+        "confidence": 87
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 88
+      }
+    },
+    {
+      "id": "validator-reject",
+      "expected": "hide",
+      "rationale": "validator_reject",
+      "candidate": {
+        "externalId": "t3_reject",
+        "title": "Should I switch from spreadsheet to software?",
+        "contentExcerpt": "I am comparing options and need practical advice.",
+        "author": "user-e",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 53
+      },
+      "stage1": {
+        "score": 84,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 86
+      },
+      "validator": {
+        "decision": "reject",
+        "confidence": 90
+      }
+    },
+    {
+      "id": "validator-low-confidence",
+      "expected": "hide",
+      "rationale": "validator_confidence_low",
+      "candidate": {
+        "externalId": "t3_lowconf",
+        "title": "Retirement drawdown strategy help",
+        "contentExcerpt": "I need a way to model sequence risk with clear assumptions.",
+        "author": "user-f",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 61
+      },
+      "stage1": {
+        "score": 83,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 82
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 60
+      }
+    },
+    {
+      "id": "strong-actionable-1",
+      "expected": "show",
+      "rationale": "clear_specific_ask_strong_fit",
+      "candidate": {
+        "externalId": "t3_show1",
+        "title": "Tool to project net worth with contributions and withdrawals?",
+        "contentExcerpt": "Need something better than spreadsheets to run scenarios.",
+        "author": "user-g",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 59
+      },
+      "stage1": {
+        "score": 87,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 89
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 88
+      }
+    },
+    {
+      "id": "strong-actionable-2",
+      "expected": "show",
+      "rationale": "clear_specific_ask_strong_fit",
+      "candidate": {
+        "externalId": "t3_show2",
+        "title": "How can I compare retirement allocations with Monte Carlo?",
+        "contentExcerpt": "I have exact numbers and want to test multiple withdrawal paths.",
+        "author": "user-h",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 67
+      },
+      "stage1": {
+        "score": 90,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 90
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 91
+      }
+    },
+    {
+      "id": "below-threshold",
+      "expected": "hide",
+      "rationale": "score_below_show_threshold",
+      "candidate": {
+        "externalId": "t3_below75",
+        "title": "General budgeting app recommendation",
+        "contentExcerpt": "Looking for any simple app suggestions.",
+        "author": "user-i",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 41
+      },
+      "stage1": {
+        "score": 74,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 76
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 85
+      }
+    },
+    {
+      "id": "excluded-term",
+      "expected": "hide",
+      "rationale": "excluded_term",
+      "candidate": {
+        "externalId": "t3_excluded",
+        "title": "Portfolio tracker giveaway for new users",
+        "contentExcerpt": "Free access code for first users.",
+        "author": "user-j",
+        "stickied": false,
+        "postHint": null,
+        "rawTextLength": 33
+      },
+      "stage1": {
+        "score": 85,
+        "specificAsk": true,
+        "fitGrade": "strong",
+        "promoRisk": "low",
+        "confidence": 80
+      },
+      "validator": {
+        "decision": "approve",
+        "confidence": 90
+      }
+    }
+  ]
+}

@@ -70,7 +70,8 @@ function makeCandidate(): SignalCandidate {
     externalId: "t3_abc123",
     community: "fire",
     title: "Should I rebalance?",
-    contentExcerpt: "I need help deciding if this portfolio should be rebalanced.",
+    contentExcerpt:
+      "I need help deciding if this portfolio should be rebalanced.",
     datePosted: new Date().toISOString(),
     author: "user-a",
     stickied: false,
@@ -85,7 +86,9 @@ function makeCandidate(): SignalCandidate {
   };
 }
 
-function makeStage1(overrides: Partial<ScoreSignalResult> = {}): ScoreSignalResult {
+function makeStage1(
+  overrides: Partial<ScoreSignalResult> = {},
+): ScoreSignalResult {
   return {
     score: 80,
     reason: "Specific ask and strong fit.",

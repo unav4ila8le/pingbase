@@ -60,7 +60,10 @@ describe("getPrefilterRejectReason", () => {
   });
 
   it("rejects stickied posts", () => {
-    const reason = getPrefilterRejectReason(makeCandidate({ stickied: true }), []);
+    const reason = getPrefilterRejectReason(
+      makeCandidate({ stickied: true }),
+      [],
+    );
     expect(reason).toBe("stickied");
   });
 

@@ -106,7 +106,7 @@ describe("persistSignals", () => {
 
     const firstUpsertCall = upsertMock.mock.calls[0];
     expect(firstUpsertCall).toBeDefined();
-    const upsertRows = (firstUpsertCall?.[0] ?? []);
+    const upsertRows = firstUpsertCall?.[0] ?? [];
     expect(upsertRows).toHaveLength(1);
     expect(upsertRows[0]).toMatchObject({
       target_id: target.id,

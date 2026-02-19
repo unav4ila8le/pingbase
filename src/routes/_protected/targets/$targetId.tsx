@@ -110,11 +110,19 @@ export const Route = createFileRoute("/_protected/targets/$targetId")({
 function TargetDetail() {
   const navigate = Route.useNavigate();
   const { target, signalsPage } = Route.useLoaderData();
-  const entries = buildPaginationEntries(signalsPage.page, signalsPage.pageCount);
+  const entries = buildPaginationEntries(
+    signalsPage.page,
+    signalsPage.pageCount,
+  );
 
-  const start = signalsPage.total === 0 ? 0 : (signalsPage.page - 1) * signalsPage.pageSize + 1;
+  const start =
+    signalsPage.total === 0
+      ? 0
+      : (signalsPage.page - 1) * signalsPage.pageSize + 1;
   const end =
-    signalsPage.total === 0 ? 0 : Math.min(signalsPage.total, start + signalsPage.pageSize - 1);
+    signalsPage.total === 0
+      ? 0
+      : Math.min(signalsPage.total, start + signalsPage.pageSize - 1);
 
   const handlePageChange = (page: number) => {
     if (page === signalsPage.page) {

@@ -95,9 +95,11 @@ export const fetchTargetSignals = createServerFn({ method: "GET" })
       .eq("target_id", data.targetId)
       .eq("user_id", userData.user.id);
 
-    const { data: signals, error, count } = await applyStrictSignalFilters(
-      baseQuery,
-    )
+    const {
+      data: signals,
+      error,
+      count,
+    } = await applyStrictSignalFilters(baseQuery)
       .order("date_posted", { ascending: false })
       .range(from, to);
 

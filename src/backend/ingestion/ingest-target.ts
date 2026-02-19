@@ -9,12 +9,11 @@ import { prefilterRedditCandidates } from "@/backend/ingestion/reddit/prefilter-
 import { applyScoreGuards } from "@/backend/ingestion/score/apply-score-guards";
 import { scoreSignalCandidate } from "@/backend/ingestion/score/score-signal";
 import { validateSignalCandidate } from "@/backend/ingestion/score/validate-signal";
+import { isStrictShowEligible } from "@/backend/signals/strict-signal-filter";
 import { persistSignals } from "@/backend/ingestion/persist/persist-signals";
 import { updateTargetLastScannedAt } from "@/backend/targets/update-target-last-scanned-at";
 
 const VALIDATOR_REJECT_MAX_SCORE = 49;
-const SHOW_SCORE_THRESHOLD = 75;
-const SHOW_VALIDATOR_CONFIDENCE_THRESHOLD = 70;
 
 type IngestTargetResult = {
   inserted: number;
@@ -107,19 +106,16 @@ export async function ingestTarget(
   }
 
   const result = await persistSignals(target, scored);
-  const showEligibleCount = scored.filter((s) => {
-    if (s.score < SHOW_SCORE_THRESHOLD) return false;
-    if (!s.stage1?.specificAsk) return false;
-    if (s.stage1.fitGrade !== "strong") return false;
-    if (s.stage1.promoRisk !== "low") return false;
-    if (s.validator?.decision !== "approve") return false;
-    if (
-      (s.validator.confidence ?? 0) < SHOW_VALIDATOR_CONFIDENCE_THRESHOLD
-    ) {
-      return false;
-    }
-    return true;
-  }).length;
+  const showEligibleCount = scored.filter((s) =>
+    isStrictShowEligible({
+      score: s.score,
+      specificAsk: s.stage1?.specificAsk ?? false,
+      fitGrade: s.stage1?.fitGrade ?? "none",
+      promoRisk: s.stage1?.promoRisk ?? "high",
+      validatorDecision: s.validator?.decision ?? null,
+      validatorConfidence: s.validator?.confidence ?? null,
+    }),
+  ).length;
 
   await updateTargetLastScannedAt(target.id);
 

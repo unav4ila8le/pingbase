@@ -34,10 +34,10 @@ const LOW_CONTEXT_POST_HINTS = new Set([
 const MIN_TEXT_LENGTH = 25;
 const MIN_LINK_CONTEXT_LENGTH = 80;
 
-function normalizeTerms(terms: Array<string> | null | undefined): Array<string> {
-  return (terms ?? [])
-    .map((term) => term.trim().toLowerCase())
-    .filter(Boolean);
+function normalizeTerms(
+  terms: Array<string> | null | undefined,
+): Array<string> {
+  return (terms ?? []).map((term) => term.trim().toLowerCase()).filter(Boolean);
 }
 
 function hasExcludedTerm(
@@ -45,7 +45,8 @@ function hasExcludedTerm(
   exclusions: Array<string>,
 ): boolean {
   if (exclusions.length === 0) return false;
-  const text = `${candidate.title ?? ""}\n${candidate.contentExcerpt}`.toLowerCase();
+  const text =
+    `${candidate.title ?? ""}\n${candidate.contentExcerpt}`.toLowerCase();
   return exclusions.some((term) => text.includes(term));
 }
 

@@ -24,7 +24,11 @@ describe("applyStrictSignalFilters", () => {
     expect(query.eq).toHaveBeenNthCalledWith(1, "specific_ask", true);
     expect(query.eq).toHaveBeenNthCalledWith(2, "fit_grade", "strong");
     expect(query.eq).toHaveBeenNthCalledWith(3, "promo_risk", "low");
-    expect(query.eq).toHaveBeenNthCalledWith(4, "validator_decision", "approve");
+    expect(query.eq).toHaveBeenNthCalledWith(
+      4,
+      "validator_decision",
+      "approve",
+    );
     expect(query.gte).toHaveBeenNthCalledWith(
       2,
       "validator_confidence",
