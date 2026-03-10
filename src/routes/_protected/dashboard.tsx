@@ -1,16 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Add01Icon, Logout01Icon, PlayIcon } from "@hugeicons/core-free-icons";
 
 import type { Target } from "@/types/global.types";
+import { triggerIngestion } from "@/backend/ingestion/trigger-ingestion";
+import { logOut } from "@/backend/auth/log-out";
+import { fetchTargetSignalCounts } from "@/backend/signals/fetch-target-signal-counts";
+import { fetchTargets } from "@/backend/targets/fetch-targets";
 import { TargetCard } from "@/components/dashboard/targets/target-card";
 import { TargetDialog } from "@/components/dashboard/targets/target-dialog";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { fetchTargets } from "@/backend/targets/fetch-targets";
-import { fetchTargetSignalCounts } from "@/backend/signals/fetch-target-signal-counts";
-import { logOut } from "@/backend/auth/log-out";
+
+type IngestionStatus = "idle" | "running" | "success" | "error";
 
 export const Route = createFileRoute("/_protected/dashboard")({
   component: Dashboard,
@@ -33,6 +38,10 @@ function Dashboard() {
   const data = Route.useLoaderData();
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isIngestionRunning, setIsIngestionRunning] = useState(false);
+  const [targetIngestionStatuses, setTargetIngestionStatuses] = useState<
+    Record<string, IngestionStatus>
+  >({});
   const [targets, setTargets] = useState<Array<Target>>(data.targets);
 
   const handleLogout = async () => {
@@ -50,6 +59,65 @@ function Dashboard() {
     }
   };
 
+  const handleRunIngestion = async () => {
+    if (isIngestionRunning) {
+      return;
+    }
+
+    const runTargetIds = targets.map((target) => target.id);
+    if (runTargetIds.length === 0) {
+      return;
+    }
+
+    setIsIngestionRunning(true);
+    setTargetIngestionStatuses((prev) => {
+      const next = { ...prev };
+      for (const targetId of runTargetIds) {
+        next[targetId] = "running";
+      }
+      return next;
+    });
+
+    try {
+      const result = await triggerIngestion({ data: {} });
+
+      const errorTargetIds = new Set(result.errorTargetIds);
+      setTargetIngestionStatuses((prev) => {
+        const next = { ...prev };
+        for (const targetId of result.processedTargetIds) {
+          next[targetId] = errorTargetIds.has(targetId) ? "error" : "success";
+        }
+        return next;
+      });
+
+      if (result.errors > 0) {
+        toast.error("Ingestion finished with issues", {
+          description: `${result.showEligible} eligible signal(s) ready to review. ${result.errors} target(s) failed.`,
+        });
+      } else {
+        toast.success("Ingestion completed", {
+          description:
+            result.showEligible > 0
+              ? `${result.showEligible} eligible signal(s) ready to review.`
+              : "No new eligible signals found.",
+        });
+      }
+    } catch (err: unknown) {
+      setTargetIngestionStatuses((prev) => {
+        const next = { ...prev };
+        for (const targetId of runTargetIds) {
+          next[targetId] = "error";
+        }
+        return next;
+      });
+      toast.error("Ingestion failed", {
+        description: err instanceof Error ? err.message : "Please try again.",
+      });
+    } finally {
+      setIsIngestionRunning(false);
+    }
+  };
+
   const hasTargets = useMemo(() => targets.length > 0, [targets.length]);
 
   return (
@@ -62,11 +130,36 @@ function Dashboard() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <Button
+            onClick={handleRunIngestion}
+            disabled={isIngestionRunning || !hasTargets}
+            variant="outline"
+          >
+            {isIngestionRunning ? (
+              <>
+                <Spinner /> Running ingestion...
+              </>
+            ) : (
+              <>
+                <HugeiconsIcon icon={PlayIcon} />
+                Run ingestion
+              </>
+            )}
+          </Button>
           <TargetDialog
             mode="create"
             onSuccess={(target) => setTargets((prev) => [target, ...prev])}
             trigger={
-              <DialogTrigger render={<Button />}>New target</DialogTrigger>
+              <DialogTrigger
+                render={
+                  <Button>
+                    <HugeiconsIcon icon={Add01Icon} />
+                    New target
+                  </Button>
+                }
+              >
+                New target
+              </DialogTrigger>
             }
           />
           <Button
@@ -79,7 +172,10 @@ function Dashboard() {
                 <Spinner /> Logging out...
               </>
             ) : (
-              "Logout"
+              <>
+                <HugeiconsIcon icon={Logout01Icon} />
+                Logout
+              </>
             )}
           </Button>
         </div>
@@ -98,6 +194,7 @@ function Dashboard() {
               key={target.id}
               target={target}
               signalCounts={data.signalCounts[target.id]}
+              ingestionStatus={targetIngestionStatuses[target.id] ?? "idle"}
               onUpdated={(updated) =>
                 setTargets((prev) =>
                   prev.map((item) => (item.id === updated.id ? updated : item)),

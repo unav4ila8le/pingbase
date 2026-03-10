@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -35,6 +36,7 @@ import { cn } from "@/lib/utils";
 type TargetCardProps = {
   target: Target;
   signalCounts?: { new: number; total: number };
+  ingestionStatus?: "idle" | "running" | "success" | "error";
   onUpdated: (target: Target) => void;
   onDeleted: (targetId: string) => void;
 };
@@ -42,6 +44,7 @@ type TargetCardProps = {
 export function TargetCard({
   target,
   signalCounts,
+  ingestionStatus = "idle",
   onUpdated,
   onDeleted,
 }: TargetCardProps) {
@@ -65,7 +68,16 @@ export function TargetCard({
   return (
     <Card className="flex h-full flex-col">
       <CardHeader>
-        <CardTitle className="text-lg">{target.name}</CardTitle>
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="text-lg">{target.name}</CardTitle>
+          {ingestionStatus === "running" ? (
+            <Badge variant="secondary">Running</Badge>
+          ) : null}
+          {ingestionStatus === "success" ? <Badge>Completed</Badge> : null}
+          {ingestionStatus === "error" ? (
+            <Badge variant="destructive">Failed</Badge>
+          ) : null}
+        </div>
         <CardDescription className="line-clamp-2">
           {target.description}
         </CardDescription>

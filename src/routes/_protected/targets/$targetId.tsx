@@ -16,8 +16,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { fetchTarget } from "@/backend/targets/fetch-target";
 import { fetchTargetSignals } from "@/backend/signals/fetch-target-signals";
+import { fetchTargets } from "@/backend/targets/fetch-targets";
 
 import { cn } from "@/lib/utils";
 
@@ -81,7 +81,9 @@ export const Route = createFileRoute("/_protected/targets/$targetId")({
     page: search.page ?? DEFAULT_PAGE,
   }),
   loader: async ({ params, deps }) => {
-    const target = await fetchTarget({ data: { id: params.targetId } });
+    const [target] = await fetchTargets({
+      data: { targetId: params.targetId },
+    });
 
     if (!target) {
       throw redirect({ to: "/dashboard" });
