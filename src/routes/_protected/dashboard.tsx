@@ -1,12 +1,17 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  getRouteApi,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Logout01Icon, PlayIcon } from "@hugeicons/core-free-icons";
 
 import type { Target } from "@/types/global.types";
-import { triggerIngestion } from "@/backend/ingestion/trigger-ingestion";
 import { logOut } from "@/backend/auth/log-out";
+import { startIngestionRun } from "@/backend/ingestion/start-ingestion-run";
 import { fetchTargetSignalCounts } from "@/backend/signals/fetch-target-signal-counts";
 import { fetchTargets } from "@/backend/targets/fetch-targets";
 import { TargetCard } from "@/components/dashboard/targets/target-card";
@@ -14,8 +19,10 @@ import { TargetDialog } from "@/components/dashboard/targets/target-dialog";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
+import { isIngestionRunActive } from "@/lib/ingestion-runs";
 
 type IngestionStatus = "idle" | "running" | "success" | "error";
+const protectedRoute = getRouteApi("/_protected");
 
 export const Route = createFileRoute("/_protected/dashboard")({
   component: Dashboard,
@@ -36,13 +43,28 @@ export const Route = createFileRoute("/_protected/dashboard")({
 
 function Dashboard() {
   const data = Route.useLoaderData();
+  const { activeIngestionRuns } = protectedRoute.useLoaderData();
   const navigate = useNavigate();
+  const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isIngestionRunning, setIsIngestionRunning] = useState(false);
-  const [targetIngestionStatuses, setTargetIngestionStatuses] = useState<
-    Record<string, IngestionStatus>
-  >({});
+  const [isStartingIngestion, setIsStartingIngestion] = useState(false);
   const [targets, setTargets] = useState<Array<Target>>(data.targets);
+  const activeRuns = useMemo(
+    () => activeIngestionRuns.filter((run) => isIngestionRunActive(run.status)),
+    [activeIngestionRuns],
+  );
+  const isAnyIngestionRunning = activeRuns.length > 0;
+  const runningTargetIds = useMemo(() => {
+    const runningIds = new Set<string>();
+
+    for (const run of activeRuns) {
+      for (const targetId of run.target_ids) {
+        runningIds.add(targetId);
+      }
+    }
+
+    return runningIds;
+  }, [activeRuns]);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -60,61 +82,33 @@ function Dashboard() {
   };
 
   const handleRunIngestion = async () => {
-    if (isIngestionRunning) {
+    if (isStartingIngestion || isAnyIngestionRunning) {
       return;
     }
 
-    const runTargetIds = targets.map((target) => target.id);
-    if (runTargetIds.length === 0) {
+    if (targets.length === 0) {
       return;
     }
 
-    setIsIngestionRunning(true);
-    setTargetIngestionStatuses((prev) => {
-      const next = { ...prev };
-      for (const targetId of runTargetIds) {
-        next[targetId] = "running";
-      }
-      return next;
-    });
-
+    setIsStartingIngestion(true);
     try {
-      const result = await triggerIngestion({ data: {} });
+      const result = await startIngestionRun({ data: {} });
+      await router.invalidate();
 
-      const errorTargetIds = new Set(result.errorTargetIds);
-      setTargetIngestionStatuses((prev) => {
-        const next = { ...prev };
-        for (const targetId of result.processedTargetIds) {
-          next[targetId] = errorTargetIds.has(targetId) ? "error" : "success";
-        }
-        return next;
-      });
-
-      if (result.errors > 0) {
-        toast.error("Ingestion finished with issues", {
-          description: `${result.showEligible} eligible signal(s) ready to review. ${result.errors} target(s) failed.`,
-        });
+      if (result.alreadyRunning) {
+        toast("Ingestion is already running.");
       } else {
-        toast.success("Ingestion completed", {
+        toast.success("Ingestion started", {
           description:
-            result.showEligible > 0
-              ? `${result.showEligible} eligible signal(s) ready to review.`
-              : "No new eligible signals found.",
+            "Processing continues in the background. You can leave this page and come back later.",
         });
       }
     } catch (err: unknown) {
-      setTargetIngestionStatuses((prev) => {
-        const next = { ...prev };
-        for (const targetId of runTargetIds) {
-          next[targetId] = "error";
-        }
-        return next;
-      });
       toast.error("Ingestion failed", {
         description: err instanceof Error ? err.message : "Please try again.",
       });
     } finally {
-      setIsIngestionRunning(false);
+      setIsStartingIngestion(false);
     }
   };
 
@@ -132,10 +126,12 @@ function Dashboard() {
         <div className="flex flex-wrap items-center gap-2">
           <Button
             onClick={handleRunIngestion}
-            disabled={isIngestionRunning || !hasTargets}
+            disabled={
+              isStartingIngestion || isAnyIngestionRunning || !hasTargets
+            }
             variant="outline"
           >
-            {isIngestionRunning ? (
+            {isStartingIngestion || isAnyIngestionRunning ? (
               <>
                 <Spinner /> Running ingestion...
               </>
@@ -194,7 +190,11 @@ function Dashboard() {
               key={target.id}
               target={target}
               signalCounts={data.signalCounts[target.id]}
-              ingestionStatus={targetIngestionStatuses[target.id] ?? "idle"}
+              ingestionStatus={
+                (runningTargetIds.has(target.id)
+                  ? "running"
+                  : "idle") as IngestionStatus
+              }
               onUpdated={(updated) =>
                 setTargets((prev) =>
                   prev.map((item) => (item.id === updated.id ? updated : item)),

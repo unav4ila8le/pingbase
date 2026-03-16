@@ -1,10 +1,12 @@
 import {
   Link as RouterLink,
   createFileRoute,
+  getRouteApi,
   redirect,
 } from "@tanstack/react-router";
 
 import { signalColumns } from "@/components/dashboard/signals/table/signal-columns";
+import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/ui/custom/data-table";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -19,6 +21,7 @@ import {
 import { fetchTargetSignals } from "@/backend/signals/fetch-target-signals";
 import { fetchTargets } from "@/backend/targets/fetch-targets";
 
+import { isIngestionRunActive } from "@/lib/ingestion-runs";
 import { cn } from "@/lib/utils";
 
 type TargetSignalsSearch = {
@@ -28,6 +31,7 @@ type TargetSignalsSearch = {
 type PaginationEntry = number | "ellipsis";
 
 const DEFAULT_PAGE = 1;
+const protectedRoute = getRouteApi("/_protected");
 
 const parsePositiveInteger = (value: unknown): number | undefined => {
   if (typeof value === "number" && Number.isFinite(value) && value > 0) {
@@ -111,7 +115,12 @@ export const Route = createFileRoute("/_protected/targets/$targetId")({
 
 function TargetDetail() {
   const navigate = Route.useNavigate();
+  const { activeIngestionRuns } = protectedRoute.useLoaderData();
   const { target, signalsPage } = Route.useLoaderData();
+  const isTargetIngestionRunning = activeIngestionRuns.some(
+    (run) =>
+      isIngestionRunActive(run.status) && run.target_ids.includes(target.id),
+  );
   const entries = buildPaginationEntries(
     signalsPage.page,
     signalsPage.pageCount,
@@ -153,7 +162,12 @@ function TargetDetail() {
           Back
         </RouterLink>
         <div>
-          <h1 className="text-2xl font-semibold">{target.name}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-semibold">{target.name}</h1>
+            {isTargetIngestionRunning ? (
+              <Badge variant="secondary">Running</Badge>
+            ) : null}
+          </div>
           <p className="text-muted-foreground text-sm">{target.description}</p>
         </div>
       </div>

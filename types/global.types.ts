@@ -10,6 +10,10 @@ export type Signal = Tables<"signals">;
 export type SignalInsert = TablesInsert<"signals">;
 export type SignalUpdate = TablesUpdate<"signals">;
 
+export type IngestionRun = Tables<"ingestion_runs">;
+export type IngestionRunInsert = TablesInsert<"ingestion_runs">;
+export type IngestionRunUpdate = TablesUpdate<"ingestion_runs">;
+
 export type SignalSummary = Pick<
   Signal,
   | "id"

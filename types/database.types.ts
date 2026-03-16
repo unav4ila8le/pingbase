@@ -34,6 +34,71 @@ export type Database = {
   };
   public: {
     Tables: {
+      ingestion_runs: {
+        Row: {
+          completed_target_count: number;
+          created_at: string;
+          error_message: string | null;
+          error_target_count: number;
+          finished_at: string | null;
+          id: string;
+          result: Json | null;
+          scope: string;
+          source: string;
+          started_at: string | null;
+          status: Database["public"]["Enums"]["ingestion_run_status"];
+          target_count: number;
+          target_id: string | null;
+          target_ids: string[];
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          completed_target_count?: number;
+          created_at?: string;
+          error_message?: string | null;
+          error_target_count?: number;
+          finished_at?: string | null;
+          id?: string;
+          result?: Json | null;
+          scope?: string;
+          source?: string;
+          started_at?: string | null;
+          status?: Database["public"]["Enums"]["ingestion_run_status"];
+          target_count?: number;
+          target_id?: string | null;
+          target_ids?: string[];
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          completed_target_count?: number;
+          created_at?: string;
+          error_message?: string | null;
+          error_target_count?: number;
+          finished_at?: string | null;
+          id?: string;
+          result?: Json | null;
+          scope?: string;
+          source?: string;
+          started_at?: string | null;
+          status?: Database["public"]["Enums"]["ingestion_run_status"];
+          target_count?: number;
+          target_id?: string | null;
+          target_ids?: string[];
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ingestion_runs_target_id_fkey";
+            columns: ["target_id"];
+            isOneToOne: false;
+            referencedRelation: "targets";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
@@ -209,6 +274,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
+      ingestion_run_status: "queued" | "running" | "succeeded" | "failed";
       signal_status: "new" | "ignored" | "replied";
       signal_type: "post" | "comment";
     };
@@ -344,6 +410,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      ingestion_run_status: ["queued", "running", "succeeded", "failed"],
       signal_status: ["new", "ignored", "replied"],
       signal_type: ["post", "comment"],
     },
