@@ -1,7 +1,7 @@
 import type { IngestionRunResult } from "@/backend/ingestion/run-ingestion";
 import {
-  heartbeatIngestionRun,
   getIngestionRunById,
+  heartbeatIngestionRun,
   markIngestionRunFailed,
   markIngestionRunRunning,
   markIngestionRunSucceeded,
@@ -51,7 +51,8 @@ export async function executeIngestionRun(
             userId: runningRun.user_id,
           })
         : await runIngestion({
-            mode: "user",
+            mode: "targets",
+            targetIds: runningRun.target_ids,
             userId: runningRun.user_id,
           });
 

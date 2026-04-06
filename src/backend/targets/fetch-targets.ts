@@ -16,6 +16,11 @@ export type TargetFetchScope =
       mode: "target";
       userId: string;
       targetId: string;
+    }
+  | {
+      mode: "targets";
+      userId: string;
+      targetIds: Array<string>;
     };
 
 type FetchTargetsInput = {
@@ -47,6 +52,10 @@ export async function fetchTargetsByScope(
 ): Promise<Array<IngestionTarget>> {
   const supabase = createServiceClient();
 
+  if (scope.mode === "targets" && scope.targetIds.length === 0) {
+    return [];
+  }
+
   let query = supabase.from("targets").select("*");
 
   if (scope.mode !== "all") {
@@ -55,6 +64,10 @@ export async function fetchTargetsByScope(
 
   if (scope.mode === "target") {
     query = query.eq("id", scope.targetId);
+  }
+
+  if (scope.mode === "targets") {
+    query = query.in("id", scope.targetIds);
   }
 
   const { data, error } = await query.order("created_at", { ascending: false });

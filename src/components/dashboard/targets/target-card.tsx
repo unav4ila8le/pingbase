@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Fire03Icon } from "@hugeicons/core-free-icons";
+import { Fire03Icon, PlayIcon } from "@hugeicons/core-free-icons";
 
 import { TargetDialog } from "./target-dialog";
 import type { Target } from "@/types/global.types";
@@ -33,23 +33,28 @@ import { deleteTarget } from "@/backend/targets/delete-target";
 
 import { cn } from "@/lib/utils";
 
-type TargetCardProps = {
+interface TargetCardProps {
   target: Target;
   signalCounts?: { new: number; total: number };
   ingestionStatus?: "idle" | "running" | "success" | "error";
+  isRunIngestionDisabled?: boolean;
+  onRunIngestion?: (targetId: string) => Promise<void> | void;
   onUpdated: (target: Target) => void;
   onDeleted: (targetId: string) => void;
-};
+}
 
 export function TargetCard({
   target,
   signalCounts,
   ingestionStatus = "idle",
+  isRunIngestionDisabled = false,
+  onRunIngestion,
   onUpdated,
   onDeleted,
 }: TargetCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const isTargetIngestionRunning = ingestionStatus === "running";
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -65,20 +70,54 @@ export function TargetCard({
     }
   };
 
+  const handleRunIngestion = () => {
+    if (!onRunIngestion) {
+      return;
+    }
+
+    void onRunIngestion(target.id);
+  };
+
   return (
     <Card className="flex h-full flex-col">
-      <CardHeader>
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-lg">{target.name}</CardTitle>
-          {ingestionStatus === "running" ? (
-            <Badge variant="secondary">Running</Badge>
-          ) : null}
-          {ingestionStatus === "success" ? <Badge>Completed</Badge> : null}
-          {ingestionStatus === "error" ? (
-            <Badge variant="destructive">Failed</Badge>
-          ) : null}
+      <CardHeader className="min-w-0">
+        <div className="flex w-full min-w-0 items-center gap-2">
+          <CardTitle
+            className="min-w-0 flex-1 truncate text-lg"
+            title={target.name}
+          >
+            {target.name}
+          </CardTitle>
+          <div className="flex shrink-0 items-center gap-2">
+            {ingestionStatus === "running" ? (
+              <Badge variant="secondary"><Spinner /> Running</Badge>
+            ) : null}
+            {ingestionStatus === "success" ? <Badge>Completed</Badge> : null}
+            {ingestionStatus === "error" ? (
+              <Badge variant="destructive">Failed</Badge>
+            ) : null}
+            {ingestionStatus !== "running" ? (
+              <Button
+                onClick={handleRunIngestion}
+                disabled={isRunIngestionDisabled || !onRunIngestion}
+                variant="outline"
+                size="sm"
+              >
+                {isTargetIngestionRunning ? (
+                  <>
+                    <Spinner /> Running...
+                  </>
+                ) : (
+                  <>
+                    <HugeiconsIcon icon={PlayIcon} />
+                    Run
+                  </>
+                )}
+              </Button>
+            ) : null}
+          </div>
         </div>
-        <CardDescription className="line-clamp-2">
+        <CardDescription className="min-w-0 line-clamp-2">
           {target.description}
         </CardDescription>
       </CardHeader>

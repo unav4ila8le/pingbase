@@ -47,13 +47,20 @@ function Dashboard() {
   const navigate = useNavigate();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isStartingIngestion, setIsStartingIngestion] = useState(false);
+  const [isStartingAllTargetsIngestion, setIsStartingAllTargetsIngestion] =
+    useState(false);
+  const [startingTargetIds, setStartingTargetIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [targets, setTargets] = useState<Array<Target>>(data.targets);
+  const hasTargets = targets.length > 0;
   const activeRuns = useMemo(
     () => activeIngestionRuns.filter((run) => isIngestionRunActive(run.status)),
     [activeIngestionRuns],
   );
-  const isAnyIngestionRunning = activeRuns.length > 0;
+  const isAllTargetsRunActive = activeRuns.some(
+    (run) => run.scope === "all_targets",
+  );
   const runningTargetIds = useMemo(() => {
     const runningIds = new Set<string>();
 
@@ -65,6 +72,25 @@ function Dashboard() {
 
     return runningIds;
   }, [activeRuns]);
+  const optimisticRunningTargetIds = useMemo(() => {
+    const runningIds = new Set(runningTargetIds);
+
+    if (isStartingAllTargetsIngestion) {
+      for (const target of targets) {
+        runningIds.add(target.id);
+      }
+    }
+
+    for (const targetId of startingTargetIds) {
+      runningIds.add(targetId);
+    }
+
+    return runningIds;
+  }, [isStartingAllTargetsIngestion, runningTargetIds, startingTargetIds, targets]);
+  const isStartingAnyTargetIngestion = startingTargetIds.size > 0;
+  const areAllTargetsRunning =
+    hasTargets &&
+    targets.every((target) => optimisticRunningTargetIds.has(target.id));
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -82,7 +108,12 @@ function Dashboard() {
   };
 
   const handleRunIngestion = async () => {
-    if (isStartingIngestion || isAnyIngestionRunning) {
+    if (
+      isStartingAllTargetsIngestion ||
+      isStartingAnyTargetIngestion ||
+      isAllTargetsRunActive ||
+      areAllTargetsRunning
+    ) {
       return;
     }
 
@@ -90,7 +121,7 @@ function Dashboard() {
       return;
     }
 
-    setIsStartingIngestion(true);
+    setIsStartingAllTargetsIngestion(true);
     try {
       const result = await startIngestionRun({ data: {} });
       await router.invalidate();
@@ -108,11 +139,49 @@ function Dashboard() {
         description: err instanceof Error ? err.message : "Please try again.",
       });
     } finally {
-      setIsStartingIngestion(false);
+      setIsStartingAllTargetsIngestion(false);
     }
   };
 
-  const hasTargets = useMemo(() => targets.length > 0, [targets.length]);
+  const handleRunTargetIngestion = async (targetId: string) => {
+    if (
+      isStartingAllTargetsIngestion ||
+      startingTargetIds.has(targetId) ||
+      optimisticRunningTargetIds.has(targetId)
+    ) {
+      return;
+    }
+
+    setStartingTargetIds((prev) => {
+      const next = new Set(prev);
+      next.add(targetId);
+      return next;
+    });
+
+    try {
+      const result = await startIngestionRun({ data: { targetId } });
+      await router.invalidate();
+
+      if (result.alreadyRunning) {
+        toast("Ingestion is already running for this target.");
+      } else {
+        toast.success("Target ingestion started", {
+          description:
+            "Processing continues in the background. You can leave this page and come back later.",
+        });
+      }
+    } catch (err: unknown) {
+      toast.error("Target ingestion failed", {
+        description: err instanceof Error ? err.message : "Please try again.",
+      });
+    } finally {
+      setStartingTargetIds((prev) => {
+        const next = new Set(prev);
+        next.delete(targetId);
+        return next;
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -127,11 +196,16 @@ function Dashboard() {
           <Button
             onClick={handleRunIngestion}
             disabled={
-              isStartingIngestion || isAnyIngestionRunning || !hasTargets
+              isStartingAllTargetsIngestion ||
+              isStartingAnyTargetIngestion ||
+              areAllTargetsRunning ||
+              !hasTargets
             }
             variant="outline"
           >
-            {isStartingIngestion || isAnyIngestionRunning ? (
+            {isStartingAllTargetsIngestion ||
+            isAllTargetsRunActive ||
+            areAllTargetsRunning ? (
               <>
                 <Spinner /> Running ingestion...
               </>
@@ -191,10 +265,15 @@ function Dashboard() {
               target={target}
               signalCounts={data.signalCounts[target.id]}
               ingestionStatus={
-                (runningTargetIds.has(target.id)
+                (optimisticRunningTargetIds.has(target.id)
                   ? "running"
                   : "idle") as IngestionStatus
               }
+              isRunIngestionDisabled={
+                isStartingAllTargetsIngestion ||
+                optimisticRunningTargetIds.has(target.id)
+              }
+              onRunIngestion={handleRunTargetIngestion}
               onUpdated={(updated) =>
                 setTargets((prev) =>
                   prev.map((item) => (item.id === updated.id ? updated : item)),

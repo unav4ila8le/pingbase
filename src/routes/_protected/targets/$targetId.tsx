@@ -4,6 +4,8 @@ import {
   getRouteApi,
   redirect,
 } from "@tanstack/react-router";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 
 import { signalColumns } from "@/components/dashboard/signals/table/signal-columns";
 import { Badge } from "@/components/ui/badge";
@@ -159,7 +161,7 @@ function TargetDetail() {
             "cursor-default",
           )}
         >
-          Back
+          <HugeiconsIcon icon={ArrowLeft01Icon} /> Back
         </RouterLink>
         <div>
           <div className="flex flex-wrap items-center gap-2">

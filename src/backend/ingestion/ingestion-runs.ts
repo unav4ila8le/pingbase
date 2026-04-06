@@ -131,9 +131,30 @@ export async function queueIngestionRun({
     };
   }
 
+  let runnableTargetIds: Array<string> | undefined;
+
+  if (!targetId) {
+    const userTargetIds = await fetchUserTargetIds(userId);
+
+    if (userTargetIds.length === 0) {
+      throw new Error("Create at least one target before running ingestion.");
+    }
+
+    runnableTargetIds = filterActiveTargetIds(userTargetIds, activeRuns);
+
+    if (runnableTargetIds.length === 0) {
+      return {
+        run: activeRuns[0],
+        alreadyRunning: true,
+      };
+    }
+  }
+
   const supabase = createServiceClient();
   const values = await buildQueuedRunValues({
+    activeRuns,
     source,
+    targetIds: runnableTargetIds,
     targetId,
     userId,
   });
@@ -245,6 +266,31 @@ async function fetchUserTargetIds(userId: string): Promise<Array<string>> {
   return (data ?? []).map((target) => target.id);
 }
 
+function extractActiveTargetIds(activeRuns: Array<IngestionRun>): Set<string> {
+  const targetIds = new Set<string>();
+
+  for (const run of activeRuns) {
+    if (run.scope !== "target") {
+      continue;
+    }
+
+    for (const targetId of run.target_ids) {
+      targetIds.add(targetId);
+    }
+  }
+
+  return targetIds;
+}
+
+function filterActiveTargetIds(
+  targetIds: Array<string>,
+  activeRuns: Array<IngestionRun>,
+): Array<string> {
+  const activeTargetIds = extractActiveTargetIds(activeRuns);
+
+  return targetIds.filter((targetId) => !activeTargetIds.has(targetId));
+}
+
 async function fetchTargetIds(
   userId: string,
   targetId: string,
@@ -296,13 +342,17 @@ async function finishIngestionRun({
 }
 
 interface BuildQueuedRunValuesInput {
+  activeRuns: Array<IngestionRun>;
   source: IngestionRunSource;
+  targetIds?: Array<string>;
   targetId?: string;
   userId: string;
 }
 
 async function buildQueuedRunValues({
+  activeRuns,
   source,
+  targetIds: scopedTargetIds,
   targetId,
   userId,
 }: BuildQueuedRunValuesInput): Promise<IngestionRunInsert> {
@@ -330,7 +380,8 @@ async function buildQueuedRunValues({
     };
   }
 
-  const targetIds = await fetchUserTargetIds(userId);
+  const targetIds =
+    scopedTargetIds ?? filterActiveTargetIds(await fetchUserTargetIds(userId), activeRuns);
 
   if (targetIds.length === 0) {
     throw new Error("Create at least one target before running ingestion.");
@@ -365,7 +416,7 @@ function findOverlappingIngestionRun({
   const scope: IngestionRunScope = targetId ? "target" : "all_targets";
 
   if (scope === "all_targets") {
-    return activeRuns[0] ?? null;
+    return activeRuns.find((run) => run.scope === "all_targets") ?? null;
   }
 
   return (
