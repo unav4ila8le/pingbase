@@ -1,19 +1,19 @@
 import { createServerClient } from "@supabase/ssr";
 import {
-  createError,
+  HTTPError,
   defineEventHandler,
-  type H3Event,
   parseCookies,
   readBody,
   setCookie,
 } from "h3";
 import { runTask } from "nitro/task";
 
-import type { Database } from "../../../../types/database.types";
 import {
   getIngestionRunById,
   markIngestionRunFailed,
 } from "../../../../src/backend/ingestion/ingestion-runs";
+import type { H3Event } from "h3";
+import type { Database } from "../../../../types/database.types";
 
 interface StartIngestionRunBody {
   runId?: string;
@@ -21,18 +21,18 @@ interface StartIngestionRunBody {
 
 function parseRunId(body: unknown): string {
   if (!body || typeof body !== "object") {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Missing ingestion run payload.",
+    throw new HTTPError({
+      status: 400,
+      message: "Missing ingestion run payload.",
     });
   }
 
   const runId = (body as StartIngestionRunBody).runId?.trim();
 
   if (!runId) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Missing ingestion run id.",
+    throw new HTTPError({
+      status: 400,
+      message: "Missing ingestion run id.",
     });
   }
 
@@ -41,9 +41,9 @@ function parseRunId(body: unknown): string {
 
 export default defineEventHandler(async (event) => {
   if (event.req.headers.get("x-pingbase-internal-request") !== "1") {
-    throw createError({
-      statusCode: 403,
-      statusMessage: "Forbidden",
+    throw new HTTPError({
+      status: 403,
+      message: "Forbidden",
     });
   }
 
@@ -52,18 +52,18 @@ export default defineEventHandler(async (event) => {
   const { data: userData, error: userError } = await supabase.auth.getUser();
 
   if (userError || !userData.user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: "Unauthorized",
+    throw new HTTPError({
+      status: 401,
+      message: "Unauthorized",
     });
   }
 
   const run = await getIngestionRunById(runId);
 
   if (!run || run.user_id !== userData.user.id) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Ingestion run not found.",
+    throw new HTTPError({
+      status: 404,
+      message: "Ingestion run not found.",
     });
   }
 
@@ -95,19 +95,18 @@ function createSupabaseClient(event: H3Event) {
   const key = process.env.VITE_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
 
   if (!url || !key) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Supabase env vars are missing.",
+    throw new HTTPError({
+      status: 500,
+      message: "Supabase env vars are missing.",
     });
   }
 
   return createServerClient<Database>(url, key, {
     cookies: {
       getAll() {
-        return Object.entries(parseCookies(event)).map(([name, value]) => ({
-          name,
-          value,
-        }));
+        return Object.entries(parseCookies(event)).flatMap(([name, value]) =>
+          typeof value === "string" ? [{ name, value }] : [],
+        );
       },
       setAll(cookies) {
         cookies.forEach((cookie) => {

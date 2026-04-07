@@ -381,7 +381,8 @@ async function buildQueuedRunValues({
   }
 
   const targetIds =
-    scopedTargetIds ?? filterActiveTargetIds(await fetchUserTargetIds(userId), activeRuns);
+    scopedTargetIds ??
+    filterActiveTargetIds(await fetchUserTargetIds(userId), activeRuns);
 
   if (targetIds.length === 0) {
     throw new Error("Create at least one target before running ingestion.");

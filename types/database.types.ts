@@ -275,7 +275,7 @@ export type Database = {
     };
     Enums: {
       ingestion_run_status: "queued" | "running" | "succeeded" | "failed";
-      signal_status: "new" | "ignored" | "replied";
+      signal_status: "new" | "seen";
       signal_type: "post" | "comment";
     };
     CompositeTypes: {
@@ -411,7 +411,7 @@ export const Constants = {
   public: {
     Enums: {
       ingestion_run_status: ["queued", "running", "succeeded", "failed"],
-      signal_status: ["new", "ignored", "replied"],
+      signal_status: ["new", "seen"],
       signal_type: ["post", "comment"],
     },
   },

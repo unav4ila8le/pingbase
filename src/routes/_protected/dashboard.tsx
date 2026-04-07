@@ -86,7 +86,12 @@ function Dashboard() {
     }
 
     return runningIds;
-  }, [isStartingAllTargetsIngestion, runningTargetIds, startingTargetIds, targets]);
+  }, [
+    isStartingAllTargetsIngestion,
+    runningTargetIds,
+    startingTargetIds,
+    targets,
+  ]);
   const isStartingAnyTargetIngestion = startingTargetIds.size > 0;
   const areAllTargetsRunning =
     hasTargets &&

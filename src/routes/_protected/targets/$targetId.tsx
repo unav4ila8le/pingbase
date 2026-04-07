@@ -3,10 +3,13 @@ import {
   createFileRoute,
   getRouteApi,
   redirect,
+  useRouter,
 } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 
+import { markTargetSignalsSeen } from "@/backend/signals/mark-target-signals-seen";
 import { signalColumns } from "@/components/dashboard/signals/table/signal-columns";
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/ui/custom/data-table";
@@ -117,12 +120,15 @@ export const Route = createFileRoute("/_protected/targets/$targetId")({
 
 function TargetDetail() {
   const navigate = Route.useNavigate();
+  const router = useRouter();
   const { activeIngestionRuns } = protectedRoute.useLoaderData();
   const { target, signalsPage } = Route.useLoaderData();
+  const lastSeenSyncKeyRef = useRef<string | null>(null);
   const isTargetIngestionRunning = activeIngestionRuns.some(
     (run) =>
       isIngestionRunActive(run.status) && run.target_ids.includes(target.id),
   );
+  const seenSyncKey = `${target.id}:${signalsPage.total}`;
   const entries = buildPaginationEntries(
     signalsPage.page,
     signalsPage.pageCount,
@@ -150,6 +156,41 @@ function TargetDetail() {
       }),
     });
   };
+
+  useEffect(() => {
+    if (signalsPage.total === 0) {
+      lastSeenSyncKeyRef.current = null;
+      return;
+    }
+
+    if (lastSeenSyncKeyRef.current === seenSyncKey) {
+      return;
+    }
+
+    lastSeenSyncKeyRef.current = seenSyncKey;
+
+    let isCancelled = false;
+
+    void (async () => {
+      try {
+        const result = await markTargetSignalsSeen({
+          data: { targetId: target.id },
+        });
+
+        if (!isCancelled && result.updated > 0) {
+          await router.invalidate();
+        }
+      } catch {
+        if (!isCancelled) {
+          lastSeenSyncKeyRef.current = null;
+        }
+      }
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [router, seenSyncKey, signalsPage.total, target.id]);
 
   return (
     <div className="flex flex-col gap-6">

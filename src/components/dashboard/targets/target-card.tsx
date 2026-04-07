@@ -77,6 +77,10 @@ export function TargetCard({
 
     void onRunIngestion(target.id);
   };
+  const newSignalsLabel =
+    signalCounts?.new === 1
+      ? "1 new signal"
+      : `${signalCounts?.new ?? 0} new signals`;
 
   return (
     <Card className="flex h-full flex-col">
@@ -90,7 +94,9 @@ export function TargetCard({
           </CardTitle>
           <div className="flex shrink-0 items-center gap-2">
             {ingestionStatus === "running" ? (
-              <Badge variant="secondary"><Spinner /> Running</Badge>
+              <Badge variant="secondary">
+                <Spinner /> Running
+              </Badge>
             ) : null}
             {ingestionStatus === "success" ? <Badge>Completed</Badge> : null}
             {ingestionStatus === "error" ? (
@@ -117,15 +123,15 @@ export function TargetCard({
             ) : null}
           </div>
         </div>
-        <CardDescription className="min-w-0 line-clamp-2">
+        <CardDescription className="line-clamp-2 min-w-0">
           {target.description}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 items-end">
-        {signalCounts ? (
+        {signalCounts && signalCounts.new > 0 ? (
           <div className="flex items-center gap-1 text-sm text-green-600">
             <HugeiconsIcon icon={Fire03Icon} className="size-5" />
-            <span>{signalCounts.new} new signals</span>
+            <span>{newSignalsLabel}</span>
           </div>
         ) : null}
       </CardContent>
